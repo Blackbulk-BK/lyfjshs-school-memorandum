@@ -20,12 +20,31 @@ function fileUrl(path) {
   return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
-// true only when logged in AND listed in the admins table
+// Distinguish an ordinary signed-out state from failed checks and missing admin access.
+async function getAdminStatus() {
+  try {
+    const { data: authData, error: authError } = await sb.auth.getSession();
+    if (authError) return { status: 'error', error: authError };
+
+    const session = authData.session;
+    if (!session) return { status: 'signed_out' };
+
+    const { data, error } = await sb
+      .from('admins')
+      .select('user_id')
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+
+    if (error) return { status: 'error', error };
+    return { status: data ? 'admin' : 'not_admin' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+}
+
 async function isAdmin() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) return false;
-  const { data } = await sb.from('admins').select('user_id').maybeSingle();
-  return !!data;
+  const result = await getAdminStatus();
+  return result.status === 'admin';
 }
 
 // Top-right header link: "Uploader login", or "Uploader page" when already logged in

@@ -1,6 +1,10 @@
 // Uploader page: upload, list, delete, recipients (Excel import), logout
 (async function () {
-  if (!(await isAdmin())) { location.replace('/login'); return; }
+  const access = await getAdminStatus();
+  if (access.status !== 'admin') {
+    location.replace(access.status === 'signed_out' ? '/login' : '/login?reason=not-admin');
+    return;
+  }
 
   document.getElementById('admin-loading').hidden = true;
   document.getElementById('admin-content').hidden = false;
