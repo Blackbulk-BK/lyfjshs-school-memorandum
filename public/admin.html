@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Uploader — School Memorandum</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="/"><img src="/logo.png" alt="School logo" onerror="this.style.display='none'"></a>
+    <h1>Luis Y. Ferrer Jr. Senior High School — School Memorandum</h1>
+  </header>
+
+  <main class="container">
+    <p id="admin-loading">Loading…</p>
+
+    <div id="admin-content" hidden>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 class="page-title">Uploader</h2>
+        <button class="btn gray" id="logout-btn">Log out</button>
+      </div>
+
+      <form class="card" id="upload-form">
+        <h3>Upload memorandum</h3>
+        <div class="form-row">
+          <label for="memo-no">School Memorandum (number)</label>
+          <input id="memo-no" required placeholder="SM NO. 001 s. 2026">
+        </div>
+        <div class="form-row">
+          <label for="title">Title</label>
+          <input id="title" required>
+        </div>
+        <div class="form-row">
+          <label for="date">Date</label>
+          <input id="date" type="date" required>
+        </div>
+        <div class="form-row">
+          <label for="file">File (PDF, Excel, Word, anything)</label>
+          <input id="file" type="file" required>
+        </div>
+        <button class="btn" id="upload-btn">Upload</button>
+        <p class="msg" id="upload-msg"></p>
+      </form>
+
+      <div class="card">
+        <h3>Email recipients (<span id="recipient-count">0</span>)</h3>
+        <p>People you can share memorandums with. Add many at once using Excel:</p>
+        <div class="actions">
+          <button class="btn gray" id="template-btn" type="button">1. Download Excel template</button>
+          <label class="btn green" for="import-file">2. Upload filled template</label>
+          <input id="import-file" type="file" accept=".xlsx,.xls,.csv" hidden>
+          <button class="btn danger" id="remove-all-btn" type="button">Remove all</button>
+        </div>
+        <p class="msg" id="recipient-msg"></p>
+        <div class="panel" style="max-height: 320px; overflow-y: auto;">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th></th></tr></thead>
+            <tbody id="recipient-rows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <h3>Uploaded memorandums</h3>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr><th>School Memorandum</th><th>Title</th><th class="date">Date</th><th></th></tr>
+          </thead>
+          <tbody id="admin-rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

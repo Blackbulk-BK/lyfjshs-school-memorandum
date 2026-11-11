@@ -10,22 +10,26 @@ values (
 )
 on conflict (id) do nothing;
 
+drop policy if exists "Anyone can read memorandum files" on storage.objects;
 create policy "Anyone can read memorandum files"
   on storage.objects for select
   to anon, authenticated
   using (bucket_id = 'memorandums');
 
+drop policy if exists "Admin can upload memorandum files" on storage.objects;
 create policy "Admin can upload memorandum files"
   on storage.objects for insert
   to authenticated
   with check (bucket_id = 'memorandums' and (select public.is_admin()));
 
+drop policy if exists "Admin can update memorandum files" on storage.objects;
 create policy "Admin can update memorandum files"
   on storage.objects for update
   to authenticated
   using (bucket_id = 'memorandums' and (select public.is_admin()))
   with check (bucket_id = 'memorandums' and (select public.is_admin()));
 
+drop policy if exists "Admin can delete memorandum files" on storage.objects;
 create policy "Admin can delete memorandum files"
   on storage.objects for delete
   to authenticated

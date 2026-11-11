@@ -1,6 +1,6 @@
--- ALL-IN-ONE: paste this whole file into Supabase > SQL Editor > Run.
--- (Same content as the numbered files in /migrations, in order.)
--- Remember to edit the email in the last section before running.
+-- ALL-IN-ONE (safe to run more than once).
+-- First create lyfjshsmemorandum@gmail.com in Supabase Authentication > Users
+-- and confirm the account. Then paste this file into Supabase > SQL Editor > Run.
 
 -- 001: Extensions + admin (the single uploader)
 
@@ -29,10 +29,12 @@ $$;
 alter table public.admins enable row level security;
 
 -- An admin can see their own admin row (nobody else can read the table)
+drop policy if exists "Admin can read own row" on public.admins;
 create policy "Admin can read own row"
   on public.admins for select
   to authenticated
   using (user_id = auth.uid());
+
 -- 002: Memorandums table
 
 create table if not exists public.memorandums (
@@ -75,6 +77,7 @@ drop trigger if exists memorandums_set_updated_at on public.memorandums;
 create trigger memorandums_set_updated_at
   before update on public.memorandums
   for each row execute function public.set_updated_at();
+
 -- 003: Email sharing (saved recipients + log of what was sent)
 
 -- People the uploader can add to share memorandums with
@@ -98,6 +101,7 @@ create table if not exists public.share_logs (
 
 create index if not exists share_logs_memo_idx
   on public.share_logs (memorandum_id, sent_at desc);
+
 -- 004: Row Level Security
 -- Public (anyone) can READ memorandums. Only the admin can change anything.
 
@@ -106,28 +110,33 @@ alter table public.share_recipients enable row level security;
 alter table public.share_logs       enable row level security;
 
 -- memorandums
+drop policy if exists "Anyone can view memorandums" on public.memorandums;
 create policy "Anyone can view memorandums"
   on public.memorandums for select
   to anon, authenticated
   using (true);
 
+drop policy if exists "Admin can insert memorandums" on public.memorandums;
 create policy "Admin can insert memorandums"
   on public.memorandums for insert
   to authenticated
   with check ((select public.is_admin()));
 
+drop policy if exists "Admin can update memorandums" on public.memorandums;
 create policy "Admin can update memorandums"
   on public.memorandums for update
   to authenticated
   using ((select public.is_admin()))
   with check ((select public.is_admin()));
 
+drop policy if exists "Admin can delete memorandums" on public.memorandums;
 create policy "Admin can delete memorandums"
   on public.memorandums for delete
   to authenticated
   using ((select public.is_admin()));
 
 -- share_recipients (admin only)
+drop policy if exists "Admin manages recipients" on public.share_recipients;
 create policy "Admin manages recipients"
   on public.share_recipients for all
   to authenticated
@@ -135,11 +144,13 @@ create policy "Admin manages recipients"
   with check ((select public.is_admin()));
 
 -- share_logs (admin only)
+drop policy if exists "Admin manages share logs" on public.share_logs;
 create policy "Admin manages share logs"
   on public.share_logs for all
   to authenticated
   using ((select public.is_admin()))
   with check ((select public.is_admin()));
+
 -- 005: Storage bucket for the uploaded files (PDF, Excel, Word, images, etc.)
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
@@ -152,36 +163,42 @@ values (
 )
 on conflict (id) do nothing;
 
+drop policy if exists "Anyone can read memorandum files" on storage.objects;
 create policy "Anyone can read memorandum files"
   on storage.objects for select
   to anon, authenticated
   using (bucket_id = 'memorandums');
 
+drop policy if exists "Admin can upload memorandum files" on storage.objects;
 create policy "Admin can upload memorandum files"
   on storage.objects for insert
   to authenticated
   with check (bucket_id = 'memorandums' and (select public.is_admin()));
 
+drop policy if exists "Admin can update memorandum files" on storage.objects;
 create policy "Admin can update memorandum files"
   on storage.objects for update
   to authenticated
   using (bucket_id = 'memorandums' and (select public.is_admin()))
   with check (bucket_id = 'memorandums' and (select public.is_admin()));
 
+drop policy if exists "Admin can delete memorandum files" on storage.objects;
 create policy "Admin can delete memorandum files"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'memorandums' and (select public.is_admin()));
+
 -- 006: Run this LAST, after you create the uploader's account.
 --
 -- Steps:
 --   1. Supabase Dashboard > Authentication > Users > "Add user"
---      (enter the uploader's email + password, tick "Auto Confirm User")
+--      Create lyfjshsmemorandum@gmail.com with the password supplied by the owner
+--      and tick "Auto Confirm User".
 --   2. Authentication > Sign In / Providers > turn OFF "Allow new users to sign up"
 --      so nobody else can create an account
---   3. Replace the email below with the uploader's email and run it
+--   3. Run this schema after the user has been created.
 
 insert into public.admins (user_id)
 select id from auth.users
-where email = 'UPLOADER_EMAIL_HERE@gmail.com'
+where email = 'lyfjshsmemorandum@gmail.com'
 on conflict do nothing;

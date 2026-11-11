@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--META-->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a id="header-link" class="header-link" href="/login">Uploader login</a>
+    <a href="/"><img src="/logo.png" alt="School logo" onerror="this.style.display='none'"></a>
+    <h1>Luis Y. Ferrer Jr. Senior High School — School Memorandum</h1>
+  </header>
+
+  <main class="container">
+    <p><a href="/">← Back to list</a></p>
+
+    <div id="memo-content" hidden>
+      <h2 class="page-title" id="memo-no" style="font-size: 26px;"></h2>
+      <p><strong id="memo-title"></strong></p>
+      <p class="meta" id="memo-date"></p>
+
+      <div class="actions">
+        <a class="btn" id="download-btn" target="_blank" rel="noreferrer">Download file</a>
+      </div>
+
+      <!-- Viewer sharing -->
+      <div class="actions">
+        <button class="btn fb" id="fb-btn">Share on Facebook</button>
+        <button class="btn gray" id="copy-btn">Copy link</button>
+      </div>
+
+      <!-- Uploader only: email sharing -->
+      <div class="card" id="email-card" hidden>
+        <h3>Share by email</h3>
+        <p>This is always sent to the school's built-in email. Tick anyone else to include:</p>
+        <div class="actions">
+          <button class="btn gray" id="select-all-btn" type="button">Select all</button>
+          <button class="btn gray" id="clear-btn" type="button">Clear</button>
+          <span id="selected-count" class="meta" style="align-self:center;"></span>
+        </div>
+        <div id="recipient-list" style="max-height: 280px; overflow-y: auto;"></div>
+        <p class="meta">Add many people at once from the <a href="/admin">Uploader page</a> using Excel.</p>
+
+        <div class="form-row" style="margin-top: 12px;">
+          <input id="new-name" placeholder="Name (optional)">
+          <input id="new-email" type="email" placeholder="Email address">
+          <div><button class="btn gray" id="add-recipient-btn">Add person</button></div>
+        </div>
+
+        <button class="btn green" id="send-email-btn">Send email</button>
+        <p class="msg" id="email-msg"></p>
+      </div>
+
+      <!-- File preview -->
+      <div id="preview"></div>
+    </div>
+
+    <p id="memo-missing" hidden>Memorandum not found.</p>
+  </main>
+
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/memo.js"></script>
+</body>
+</html>

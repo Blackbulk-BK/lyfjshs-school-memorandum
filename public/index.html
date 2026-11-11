@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luis Y. Ferrer Jr. Senior High School — School Memorandum</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a id="header-link" class="header-link" href="/login">Uploader login</a>
+    <a href="/"><img src="/logo.png" alt="School logo" onerror="this.style.display='none'"></a>
+    <h1>Luis Y. Ferrer Jr. Senior High School — School Memorandum</h1>
+  </header>
+
+  <main class="container">
+    <h2 class="page-title">School Memorandum</h2>
+
+    <div class="panel">
+      <div class="panel-top">
+        <form class="search" action="/" method="get">
+          <input id="search-input" name="q" placeholder="Search">
+          <button type="submit" aria-label="Search">🔍</button>
+        </form>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>School Memorandum</th>
+            <th>Title</th>
+            <th class="date">Date</th>
+          </tr>
+        </thead>
+        <tbody id="memo-rows">
+          <tr><td colspan="3" class="empty">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/index.js"></script>
+</body>
+</html>

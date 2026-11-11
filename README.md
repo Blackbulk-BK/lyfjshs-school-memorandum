@@ -2,26 +2,54 @@
 
 Website where one uploader posts school memorandums (PDF, Excel, Word, any file) and everyone can view, search, and share them.
 
-**Stack:** Next.js 14 (TypeScript) · Supabase (Postgres + Auth + Storage) · Nodemailer (Gmail) · hosted on Vercel
+**Stack:** HTML + CSS + JavaScript (browser) · Node.js functions (server) · Supabase (database, login, file storage) · Brevo (email) · Vercel (hosting)
 
-## Setup
+## Files
 
-1. Create a free project at https://supabase.com
-2. Authentication > Users > Add user (the uploader). Then turn OFF "Allow new users to sign up".
-3. Edit the email in `supabase/migrations/006_make_uploader_admin.sql`, then paste `supabase/schema.sql` in the SQL Editor and Run.
-4. Copy `.env.example` to `.env.local` and fill it in.
-5. Put the school logo at `public/logo.png`.
-6. `npm install` then `npm run dev` and open http://localhost:3000
-
-## Pages
-
-| Route | Who | What |
+| File | Language | What it does |
 |---|---|---|
-| `/` | everyone | List + search |
-| `/memo/[id]` | everyone | File preview, download, Facebook share (uploader also sees email share) |
-| `/login` | uploader | Log in |
-| `/admin` | uploader | Upload / delete |
+| `public/index.html` | HTML | Home: list + search |
+| `public/memo.html` | HTML | One memorandum: preview, download, share |
+| `public/login.html` | HTML | Uploader login |
+| `public/admin.html` | HTML | Upload / delete / email recipients (Excel import) |
+| `public/css/style.css` | CSS | Design |
+| `public/js/*.js` | JavaScript (browser) | Behavior of each page |
+| `api/config.js` | JavaScript (Node.js) | Gives the browser the Supabase settings |
+| `api/memo.js` | JavaScript (Node.js) | Memo page + title for Facebook sharing |
+| `api/send-email.js` | JavaScript (Node.js) | Sends the emails through Brevo |
+| `lib/shared.js` | JavaScript (Node.js) | Shared helpers |
+| `local-server.js` | JavaScript (Node.js) | Runs everything on your PC (`npm start`) |
+| `vercel.json` | JSON | Tells Vercel how to run the site |
+| `supabase/*.sql` | SQL | Database, security, file storage |
 
-## Deploy
+## 1. Supabase (once)
 
-Push to GitHub, import the repo in Vercel, and add the same variables from `.env.example` in Vercel > Settings > Environment Variables (set `NEXT_PUBLIC_SITE_URL` to the real website address).
+1. Authentication > Users > Add user. Create `lyfjshsmemorandum@gmail.com` with the password supplied by the owner, and tick *Auto Confirm User*.
+2. Authentication > Sign In / Providers > turn OFF *Allow new users to sign up*.
+3. SQL Editor > New query > paste `supabase/schema.sql` > Run. It is safe to run again and adds the account as the uploader admin.
+
+## 2. Brevo (email)
+
+1. Sign up at https://www.brevo.com
+2. Senders, Domains & IPs > Senders > add and verify your school Gmail.
+3. SMTP & API > SMTP > copy the login and generate an SMTP key.
+
+## 3. Run on your computer
+
+1. Install Node.js (LTS) from https://nodejs.org
+2. Copy `.env.example` to `.env` and fill it in.
+3. Put the school logo at `public/logo.png`
+4. `npm install` then `npm start` > open http://localhost:3000
+
+## 4. Put it online with Vercel
+
+1. Push the project to GitHub (`.env` is NOT uploaded).
+2. https://vercel.com > Add New > Project > import the repo.
+3. Framework Preset: **Other**. Leave the build settings as they are (vercel.json handles them).
+4. Open **Environment Variables** and add every line from your `.env` (name and value), except you can skip `SITE_URL`.
+5. Deploy. Your site is at `https://your-project.vercel.app`.
+6. Facebook sharing works on this online address (not on localhost).
+
+## Adding many email recipients at once
+
+Log in > Uploader page > Email recipients > Download the Excel template > fill in Name and Email > Upload it.

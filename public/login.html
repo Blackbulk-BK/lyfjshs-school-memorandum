@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Uploader Login — School Memorandum</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="/"><img src="/logo.png" alt="School logo" onerror="this.style.display='none'"></a>
+    <h1>Luis Y. Ferrer Jr. Senior High School — School Memorandum</h1>
+  </header>
+
+  <main class="container">
+    <form class="card" id="login-form" style="max-width: 420px; margin: 0 auto;">
+      <h3>Uploader login</h3>
+      <div class="form-row">
+        <label for="email">Email</label>
+        <input id="email" type="email" required>
+      </div>
+      <div class="form-row">
+        <label for="password">Password</label>
+        <input id="password" type="password" required>
+      </div>
+      <button class="btn" id="login-btn">Log in</button>
+      <p class="msg" id="login-msg"></p>
+    </form>
+  </main>
+
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>

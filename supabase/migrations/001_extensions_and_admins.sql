@@ -25,6 +25,7 @@ $$;
 alter table public.admins enable row level security;
 
 -- An admin can see their own admin row (nobody else can read the table)
+drop policy if exists "Admin can read own row" on public.admins;
 create policy "Admin can read own row"
   on public.admins for select
   to authenticated

@@ -1,0 +1,13 @@
+{
+  "framework": null,
+  "outputDirectory": "public",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/config.js", "destination": "/api/config" },
+    { "source": "/memo/:id", "destination": "/api/memo?id=:id" }
+  ],
+  "functions": {
+    "api/memo.js": { "includeFiles": "public/memo.html" },
+    "api/send-email.js": { "maxDuration": 60 }
+  }
+}
