@@ -21,11 +21,11 @@
     memos = data || [];
     rows.innerHTML = memos.map((m) => `
       <tr>
-        <td><a href="/memo/${esc(m.id)}">${esc(m.memo_no)}</a></td>
+        <td><a href="/memo/${esc(m.id)}">${SchoolIcons.svg('file-text')}<span>${esc(m.memo_no)}</span></a></td>
         <td>${esc(m.title)}</td>
         <td class="date">${formatDate(m.memo_date)}</td>
-        <td><button class="btn danger" data-id="${esc(m.id)}">Delete</button></td>
-      </tr>`).join('');
+        <td><button class="btn danger" data-id="${esc(m.id)}">${SchoolIcons.svg('trash')}<span>Delete</span></button></td>
+      </tr>`).join('') || '<tr><td colspan="4" class="empty">No memorandums published yet.</td></tr>';
   }
 
   rows.addEventListener('click', async (e) => {
@@ -44,16 +44,20 @@
     if (!file) { msg.textContent = 'Please choose a file.'; return; }
 
     btn.disabled = true;
-    btn.textContent = 'Uploading…';
+    const btnLabel = btn.querySelector('.button-label');
+    if (btnLabel) btnLabel.textContent = 'Uploading…';
     msg.textContent = '';
 
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
     const path = `${Date.now()}-${safeName}`;
 
-    const up = await sb.storage.from(BUCKET).upload(path, file);
-    if (up.error) {
-      msg.textContent = up.error.message;
-    } else {
+    try {
+      const up = await sb.storage.from(BUCKET).upload(path, file);
+      if (up.error) {
+        msg.textContent = `Upload failed: ${up.error.message}`;
+        return;
+      }
+
       const ins = await sb.from('memorandums').insert({
         memo_no: document.getElementById('memo-no').value.trim(),
         title: document.getElementById('title').value.trim(),
@@ -62,20 +66,58 @@
         file_name: file.name,
         file_type: file.type || null,
         file_size: file.size,
-      });
+      }).select('id').single();
 
       if (ins.error) {
-        await sb.storage.from(BUCKET).remove([path]); // undo the upload
-        msg.textContent = ins.error.message;
-      } else {
-        form.reset();
-        msg.textContent = 'Uploaded!';
-        loadMemos();
+        const cleanup = await sb.storage.from(BUCKET).remove([path]);
+        if (cleanup.error) console.error('Could not remove file after memo insert failed:', cleanup.error);
+        msg.textContent = `Memorandum could not be saved: ${ins.error.message}`;
+        return;
       }
-    }
 
-    btn.disabled = false;
-    btn.textContent = 'Upload';
+      form.reset();
+      await loadMemos();
+      msg.textContent = 'Memorandum uploaded. Sending it to the saved email recipients…';
+
+      const { data: authData, error: authError } = await sb.auth.getSession();
+      if (authError || !authData.session) {
+        console.error('Could not get uploader session for email notification:', authError);
+        msg.textContent = 'Memorandum uploaded, but email notification could not be sent because your session is unavailable.';
+        return;
+      }
+
+      let response;
+      let result;
+      try {
+        response = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authData.session.access_token}`,
+          },
+          body: JSON.stringify({ memoId: ins.data.id, includeSavedRecipients: true }),
+        });
+        result = await response.json();
+      } catch (error) {
+        console.error('Could not send upload notification:', error);
+        msg.textContent = 'Memorandum uploaded, but email notification failed. Check your connection and email server settings.';
+        return;
+      }
+
+      if (!response.ok) {
+        msg.textContent = `Memorandum uploaded, but email notification failed: ${result.error || 'Check the email server settings.'}`;
+      } else if (result.failed > 0) {
+        msg.textContent = `Memorandum uploaded. Email sent to ${result.sent} of ${result.total} recipients; ${result.failed} failed. Check the email server settings and try sharing again.`;
+      } else {
+        msg.textContent = `Memorandum uploaded and emailed to ${result.sent} recipient(s).`;
+      }
+    } catch (error) {
+      console.error('Unexpected memorandum upload error:', error);
+      msg.textContent = 'An unexpected error occurred while uploading the memorandum.';
+    } finally {
+      btn.disabled = false;
+      if (btnLabel) btnLabel.textContent = 'Upload notice';
+    }
   });
 
   // ======================= EMAIL RECIPIENTS (EXCEL) =======================
@@ -93,7 +135,7 @@
           <tr>
             <td>${esc(r.name || '')}</td>
             <td>${esc(r.email)}</td>
-            <td><button class="btn danger" data-rid="${esc(r.id)}">Remove</button></td>
+            <td><button class="btn danger" data-rid="${esc(r.id)}">${SchoolIcons.svg('trash')}<span>Remove</span></button></td>
           </tr>`).join('')
       : '<tr><td colspan="3" class="empty">No recipients yet.</td></tr>';
   }

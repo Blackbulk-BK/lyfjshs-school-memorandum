@@ -4,43 +4,70 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Luis Y. Ferrer Jr. Senior High School — School Memorandum</title>
+  <meta name="theme-color" content="#214d3b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="site-header">
-    <a id="header-link" class="header-link" href="/login">Uploader login</a>
-    <a href="/"><img src="/logo.png" alt="School logo" onerror="this.style.display='none'"></a>
-    <h1>Luis Y. Ferrer Jr. Senior High School — School Memorandum</h1>
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="School memorandum home">
+        <img src="/logo.png" alt="" onerror="this.style.display='none'">
+        <span class="brand-copy"><strong>LYFJSHS</strong><small>School Memorandum</small></span>
+      </a>
+      <span class="header-school">Luis Y. Ferrer Jr. Senior High School</span>
+      <a id="header-link" class="header-link" href="/login"><i data-icon="lock-keyhole"></i><span>Uploader login</span></a>
+    </div>
   </header>
 
   <main class="container">
-    <h2 class="page-title">School Memorandum</h2>
+    <section class="page-intro">
+      <p class="eyebrow"><span class="eyebrow-rule"></span> OFFICIAL SCHOOL NOTICES</p>
+      <h1 class="page-title">School <em>memorandums</em></h1>
+      <p class="intro-copy">A central place for the latest announcements, circulars, and school documents.</p>
+    </section>
 
-    <div class="panel">
+    <section class="directory-card">
       <div class="panel-top">
         <form class="search" action="/" method="get">
-          <input id="search-input" name="q" placeholder="Search">
-          <button type="submit" aria-label="Search">🔍</button>
+          <label class="sr-only" for="search-input">Search memorandums</label>
+          <i class="search-icon" data-icon="search"></i>
+          <input id="search-input" name="q" placeholder="Search by title or memo number">
+          <button type="submit" aria-label="Search memorandums">Search</button>
         </form>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>School Memorandum</th>
-            <th>Title</th>
-            <th class="date">Date</th>
-          </tr>
-        </thead>
-        <tbody id="memo-rows">
-          <tr><td colspan="3" class="empty">Loading…</td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">MEMORANDUM ARCHIVE</p>
+          <h2>Recent notices</h2>
+        </div>
+        <span class="section-note">Browse the latest school documents</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Memorandum</th>
+              <th>Title</th>
+              <th class="date">Date issued</th>
+            </tr>
+          </thead>
+          <tbody id="memo-rows">
+            <tr><td colspan="3" class="empty"><span class="loading-mark"></span>Loading memorandums</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <footer class="page-footer"><span>LYFJSHS</span><span>Official school memorandum archive</span></footer>
   </main>
 
   <script src="/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
+  <script src="/js/icons.js"></script>
   <script src="/js/common.js"></script>
   <script src="/js/index.js"></script>
 </body>

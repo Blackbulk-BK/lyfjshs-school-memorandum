@@ -4,25 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Uploader — School Memorandum</title>
+  <meta name="theme-color" content="#214d3b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="site-header">
-    <a href="/"><img src="/logo.png" alt="School logo" onerror="this.style.display='none'"></a>
-    <h1>Luis Y. Ferrer Jr. Senior High School — School Memorandum</h1>
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="School memorandum home">
+        <img src="/logo.png" alt="" onerror="this.style.display='none'">
+        <span class="brand-copy"><strong>LYFJSHS</strong><small>School Memorandum</small></span>
+      </a>
+      <span class="header-school">Luis Y. Ferrer Jr. Senior High School</span>
+      <a class="header-link" href="/"><i data-icon="layout-dashboard"></i><span>View dashboard</span></a>
+    </div>
   </header>
 
   <main class="container">
     <p id="admin-loading">Loading…</p>
 
     <div id="admin-content" hidden>
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 class="page-title">Uploader</h2>
-        <button class="btn gray" id="logout-btn">Log out</button>
-      </div>
+      <section class="admin-intro">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-rule"></span> ADMINISTRATION</p>
+          <h1 class="page-title">Uploader <em>workspace</em></h1>
+          <p class="intro-copy">Publish notices, manage your recipient list, and keep the archive current.</p>
+        </div>
+        <button class="btn btn-outline logout-btn" id="logout-btn"><i data-icon="log-out"></i><span>Log out</span></button>
+      </section>
 
       <form class="card" id="upload-form">
-        <h3>Upload memorandum</h3>
+        <div class="card-heading"><span class="icon-tile"><i data-icon="upload"></i></span><div><p class="eyebrow">PUBLISH A NOTICE</p><h2>Upload memorandum</h2></div></div>
+        <div class="form-grid">
         <div class="form-row">
           <label for="memo-no">School Memorandum (number)</label>
           <input id="memo-no" required placeholder="SM NO. 001 s. 2026">
@@ -39,43 +54,58 @@
           <label for="file">File (PDF, Excel, Word, anything)</label>
           <input id="file" type="file" required>
         </div>
-        <button class="btn" id="upload-btn">Upload</button>
-        <p class="msg" id="upload-msg"></p>
+        </div>
+        <div class="upload-footer">
+          <p class="meta"><i data-icon="mail"></i><span>After upload, the notice is emailed to saved recipients.</span></p>
+          <button class="btn" id="upload-btn"><i data-icon="upload"></i><span class="button-label">Upload notice</span></button>
+        </div>
+        <p class="msg" id="upload-msg" role="status" aria-live="polite"></p>
       </form>
 
       <div class="card">
-        <h3>Email recipients (<span id="recipient-count">0</span>)</h3>
-        <p>People you can share memorandums with. Add many at once using Excel:</p>
+        <div class="card-heading card-heading-between">
+          <div class="card-heading">
+            <span class="icon-tile"><i data-icon="users"></i></span>
+            <div><p class="eyebrow">DISTRIBUTION LIST</p><h2>Email recipients <span class="count-pill" id="recipient-count">0</span></h2></div>
+          </div>
+          <button class="btn btn-danger-outline" id="remove-all-btn" type="button">Remove all</button>
+        </div>
+        <p class="form-intro">Manage the people who receive new memorandum notices.</p>
         <div class="actions">
-          <button class="btn gray" id="template-btn" type="button">1. Download Excel template</button>
-          <label class="btn green" for="import-file">2. Upload filled template</label>
+          <button class="btn btn-outline" id="template-btn" type="button"><i data-icon="download"></i><span>Download template</span></button>
+          <label class="btn btn-soft" for="import-file"><i data-icon="upload"></i><span>Import spreadsheet</span></label>
           <input id="import-file" type="file" accept=".xlsx,.xls,.csv" hidden>
-          <button class="btn danger" id="remove-all-btn" type="button">Remove all</button>
         </div>
         <p class="msg" id="recipient-msg"></p>
-        <div class="panel" style="max-height: 320px; overflow-y: auto;">
+        <div class="panel recipient-panel">
           <table>
             <thead><tr><th>Name</th><th>Email</th><th></th></tr></thead>
-            <tbody id="recipient-rows"></tbody>
+            <tbody id="recipient-rows"><tr><td colspan="3" class="empty">Loading recipients</td></tr></tbody>
           </table>
         </div>
       </div>
 
-      <h3>Uploaded memorandums</h3>
-      <div class="panel">
+      <section class="archive-section">
+      <div class="section-heading">
+        <div><p class="eyebrow">YOUR LIBRARY</p><h2>Published memorandums</h2></div>
+        <span class="section-note">Manage notices in the public archive</span>
+      </div>
+      <div class="directory-card table-wrap">
         <table>
           <thead>
-            <tr><th>School Memorandum</th><th>Title</th><th class="date">Date</th><th></th></tr>
+            <tr><th>Memorandum</th><th>Title</th><th class="date">Date issued</th><th></th></tr>
           </thead>
-          <tbody id="admin-rows"></tbody>
+          <tbody id="admin-rows"><tr><td colspan="4" class="empty">Loading memorandums</td></tr></tbody>
         </table>
       </div>
+      </section>
     </div>
   </main>
 
   <script src="/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="/js/icons.js"></script>
   <script src="/js/common.js"></script>
   <script src="/js/admin.js"></script>
 </body>

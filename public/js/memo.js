@@ -19,6 +19,7 @@
   dl.setAttribute('download', memo.file_name);
 
   document.getElementById('preview').innerHTML = buildPreview(url, memo.file_name, memo.file_type);
+  if (window.SchoolIcons) window.SchoolIcons.render(document.getElementById('memo-content'));
   document.getElementById('memo-content').hidden = false;
 
   // ---------- Facebook + copy link ----------
@@ -33,8 +34,11 @@
   const copyBtn = document.getElementById('copy-btn');
   copyBtn.addEventListener('click', async () => {
     await navigator.clipboard.writeText(location.href);
-    copyBtn.textContent = 'Link copied!';
-    setTimeout(() => (copyBtn.textContent = 'Copy link'), 2000);
+    const label = copyBtn.querySelector('span');
+    if (label) label.textContent = 'Link copied';
+    setTimeout(() => {
+      if (label) label.textContent = 'Copy link';
+    }, 2000);
   });
 
   setupEmailShare(memo.id);
@@ -48,7 +52,7 @@
     const isOffice = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext);
 
     if (isPdf) return `<iframe class="preview" src="${esc(fileLink)}" title="${esc(name)}"></iframe>`;
-    if (isImage) return `<img src="${esc(fileLink)}" alt="${esc(name)}" style="max-width:100%">`;
+    if (isImage) return `<img class="preview-image" src="${esc(fileLink)}" alt="${esc(name)}">`;
     if (isOffice) {
       const viewer = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(fileLink);
       return `<iframe class="preview" src="${esc(viewer)}" title="${esc(name)}"></iframe>`;

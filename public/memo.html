@@ -4,64 +4,76 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!--META-->
+  <meta name="theme-color" content="#214d3b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="site-header">
-    <a id="header-link" class="header-link" href="/login">Uploader login</a>
-    <a href="/"><img src="/logo.png" alt="School logo" onerror="this.style.display='none'"></a>
-    <h1>Luis Y. Ferrer Jr. Senior High School — School Memorandum</h1>
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="School memorandum home">
+        <img src="/logo.png" alt="" onerror="this.style.display='none'">
+        <span class="brand-copy"><strong>LYFJSHS</strong><small>School Memorandum</small></span>
+      </a>
+      <span class="header-school">Luis Y. Ferrer Jr. Senior High School</span>
+      <a id="header-link" class="header-link" href="/login"><i data-icon="lock-keyhole"></i><span>Uploader login</span></a>
+    </div>
   </header>
 
   <main class="container">
-    <p><a href="/">← Back to list</a></p>
+    <a class="back-link" href="/"><i data-icon="arrow-left"></i><span>All memorandums</span></a>
 
-    <div id="memo-content" hidden>
-      <h2 class="page-title" id="memo-no" style="font-size: 26px;"></h2>
-      <p><strong id="memo-title"></strong></p>
-      <p class="meta" id="memo-date"></p>
-
-      <div class="actions">
-        <a class="btn" id="download-btn" target="_blank" rel="noreferrer">Download file</a>
+    <article id="memo-content" class="memo-sheet" hidden>
+      <div class="memo-heading">
+        <p class="eyebrow"><span class="eyebrow-rule"></span> SCHOOL MEMORANDUM</p>
+        <h1 class="page-title" id="memo-no"></h1>
+        <p class="memo-title" id="memo-title"></p>
+        <p class="meta memo-date" id="memo-date"></p>
       </div>
 
-      <!-- Viewer sharing -->
-      <div class="actions">
-        <button class="btn fb" id="fb-btn">Share on Facebook</button>
-        <button class="btn gray" id="copy-btn">Copy link</button>
+      <div class="memo-toolbar">
+        <a class="btn" id="download-btn" target="_blank" rel="noreferrer"><i data-icon="download"></i><span>Download file</span></a>
+        <button class="btn btn-outline" id="fb-btn"><i data-icon="share"></i><span>Share memorandum</span></button>
+        <button class="btn btn-outline" id="copy-btn"><i data-icon="clipboard"></i><span>Copy link</span></button>
       </div>
 
       <!-- Uploader only: email sharing -->
       <div class="card" id="email-card" hidden>
-        <h3>Share by email</h3>
+        <div class="card-heading"><span class="icon-tile"><i data-icon="mail"></i></span><div><p class="eyebrow">UPLOADER TOOLS</p><h2>Share by email</h2></div></div>
         <p>This is always sent to the school's built-in email. Tick anyone else to include:</p>
         <div class="actions">
-          <button class="btn gray" id="select-all-btn" type="button">Select all</button>
-          <button class="btn gray" id="clear-btn" type="button">Clear</button>
+          <button class="btn btn-outline" id="select-all-btn" type="button">Select all</button>
+          <button class="btn btn-outline" id="clear-btn" type="button">Clear</button>
           <span id="selected-count" class="meta" style="align-self:center;"></span>
         </div>
         <div id="recipient-list" style="max-height: 280px; overflow-y: auto;"></div>
         <p class="meta">Add many people at once from the <a href="/admin">Uploader page</a> using Excel.</p>
 
-        <div class="form-row" style="margin-top: 12px;">
+        <div class="recipient-entry" style="margin-top: 12px;">
           <input id="new-name" placeholder="Name (optional)">
           <input id="new-email" type="email" placeholder="Email address">
-          <div><button class="btn gray" id="add-recipient-btn">Add person</button></div>
+          <div><button class="btn btn-outline" id="add-recipient-btn"><i data-icon="plus"></i><span>Add person</span></button></div>
         </div>
 
-        <button class="btn green" id="send-email-btn">Send email</button>
+        <button class="btn" id="send-email-btn"><i data-icon="mail"></i><span>Send email</span></button>
         <p class="msg" id="email-msg"></p>
       </div>
 
       <!-- File preview -->
-      <div id="preview"></div>
-    </div>
+      <section class="preview-section">
+        <div class="section-heading"><div><p class="eyebrow">DOCUMENT</p><h2>Preview</h2></div></div>
+        <div id="preview"></div>
+      </section>
+    </article>
 
-    <p id="memo-missing" hidden>Memorandum not found.</p>
+    <section id="memo-missing" class="card empty-state" hidden><span class="icon-tile"><i data-icon="file-text"></i></span><h2>Memorandum not found</h2><p>This document may have been removed or the link may be incorrect.</p><a class="btn" href="/">Return to the archive</a></section>
   </main>
 
   <script src="/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
+  <script src="/js/icons.js"></script>
   <script src="/js/common.js"></script>
   <script src="/js/memo.js"></script>
 </body>

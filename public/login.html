@@ -4,32 +4,51 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Uploader Login — School Memorandum</title>
+  <meta name="theme-color" content="#214d3b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="site-header">
-    <a href="/"><img src="/logo.png" alt="School logo" onerror="this.style.display='none'"></a>
-    <h1>Luis Y. Ferrer Jr. Senior High School — School Memorandum</h1>
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="School memorandum home">
+        <img src="/logo.png" alt="" onerror="this.style.display='none'">
+        <span class="brand-copy"><strong>LYFJSHS</strong><small>School Memorandum</small></span>
+      </a>
+      <span class="header-school">Luis Y. Ferrer Jr. Senior High School</span>
+      <a class="header-link" href="/"><i data-icon="arrow-left"></i><span>Back to archive</span></a>
+    </div>
   </header>
 
-  <main class="container">
-    <form class="card" id="login-form" style="max-width: 420px; margin: 0 auto;">
-      <h3>Uploader login</h3>
+  <main class="container login-layout">
+    <section class="login-aside">
+      <p class="eyebrow"><span class="eyebrow-rule"></span> ADMINISTRATION</p>
+      <h1>Good to have<br><em>you back.</em></h1>
+      <p>Sign in to manage school memorandums and keep the community up to date.</p>
+      <div class="login-trust"><i data-icon="shield-check"></i><span>Secure uploader access</span></div>
+    </section>
+
+    <form class="card login-card" id="login-form">
+      <div class="card-heading"><span class="icon-tile"><i data-icon="lock-keyhole"></i></span><div><p class="eyebrow">UPLOADER PORTAL</p><h2>Sign in</h2></div></div>
+      <p class="form-intro">Use your school uploader account to continue.</p>
       <div class="form-row">
-        <label for="email">Email</label>
-        <input id="email" type="email" required>
+        <label for="email">Email address</label>
+        <input id="email" type="email" autocomplete="username" placeholder="you@school.edu.ph" required>
       </div>
       <div class="form-row">
         <label for="password">Password</label>
-        <input id="password" type="password" required>
+        <input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
       </div>
-      <button class="btn" id="login-btn">Log in</button>
-      <p class="msg" id="login-msg"></p>
+      <button class="btn login-submit" id="login-btn" type="submit"><span>Log in</span><i data-icon="arrow-up-right"></i></button>
+      <p class="msg" id="login-msg" role="status" aria-live="polite"></p>
     </form>
   </main>
 
   <script src="/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
+  <script src="/js/icons.js"></script>
   <script src="/js/common.js"></script>
   <script src="/js/login.js"></script>
 </body>

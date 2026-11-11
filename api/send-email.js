@@ -43,7 +43,18 @@ module.exports = async (req, res) => {
     if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
     body = body || {};
     const memoId = body.memoId;
-    const extraRaw = Array.isArray(body.recipients) ? body.recipients : [];
+    let extraRaw = Array.isArray(body.recipients) ? body.recipients : [];
+
+    if (body.includeSavedRecipients === true) {
+      const { data: savedRecipients, error } = await userDb
+        .from('share_recipients')
+        .select('email');
+      if (error) {
+        console.error('Could not load saved email recipients:', error);
+        return res.status(500).json({ error: 'Could not load the saved email recipients.' });
+      }
+      extraRaw = extraRaw.concat((savedRecipients || []).map((recipient) => recipient.email));
+    }
 
     const { data: memo } = await userDb.from('memorandums').select('*').eq('id', memoId).maybeSingle();
     if (!memo) return res.status(404).json({ error: 'Memorandum not found.' });
@@ -85,6 +96,7 @@ module.exports = async (req, res) => {
     if (groups.length === 0) groups.push([]);
 
     let sent = 0;
+    let failed = 0;
     for (let g = 0; g < groups.length; g++) {
       const bcc = groups[g];
       const first = g === 0;
@@ -103,7 +115,9 @@ module.exports = async (req, res) => {
           emailed.map((email) => ({ memorandum_id: memo.id, recipient_email: email, status: 'sent' }))
         );
       } catch (err) {
-        await userDb.from('share_logs').insert(
+        console.error('Could not send memorandum email batch:', err);
+        failed += emailed.length;
+        const { error: logError } = await userDb.from('share_logs').insert(
           emailed.map((email) => ({
             memorandum_id: memo.id,
             recipient_email: email,
@@ -111,12 +125,22 @@ module.exports = async (req, res) => {
             error_message: String(err).slice(0, 300),
           }))
         );
+        if (logError) console.error('Could not record failed email batch:', logError);
       }
     }
 
-    if (sent === 0) return res.status(500).json({ error: 'Email failed. Check the Brevo settings.' });
-    return res.status(200).json({ sent });
+    const total = sent + failed;
+    if (sent === 0) {
+      return res.status(502).json({
+        error: 'Email delivery failed. Check the SMTP or Gmail settings.',
+        sent,
+        failed,
+        total,
+      });
+    }
+    return res.status(200).json({ sent, failed, total });
   } catch (err) {
+    console.error('Unexpected email notification error:', err);
     return res.status(500).json({ error: 'Something went wrong while sending.' });
   }
 };

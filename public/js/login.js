@@ -29,7 +29,8 @@
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     btn.disabled = true;
-    btn.textContent = 'Logging in…';
+    const btnLabel = btn.querySelector('span');
+    if (btnLabel) btnLabel.textContent = 'Logging in…';
     msg.textContent = '';
 
     try {
@@ -54,7 +55,7 @@
       msg.textContent = 'Login could not reach Supabase. Check your connection and try again.';
     } finally {
       btn.disabled = false;
-      btn.textContent = 'Log in';
+      if (btnLabel) btnLabel.textContent = 'Log in';
     }
   });
 })();

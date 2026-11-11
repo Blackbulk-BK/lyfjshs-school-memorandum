@@ -22,7 +22,7 @@
 
   tbody.innerHTML = data.map((m) => `
     <tr>
-      <td><a href="/memo/${esc(m.id)}">${esc(m.memo_no)}</a></td>
+      <td><a href="/memo/${esc(m.id)}">${SchoolIcons.svg('file-text')}<span>${esc(m.memo_no)}</span></a></td>
       <td>${esc(m.title)}</td>
       <td class="date">${formatDate(m.memo_date)}</td>
     </tr>`).join('');
