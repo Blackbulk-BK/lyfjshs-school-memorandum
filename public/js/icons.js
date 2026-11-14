@@ -1,6 +1,9 @@
 (function (root) {
   const icons = {
     "arrow-left": '<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+    "arrow-down": '<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>',
+    "arrow-up": '<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>',
+    "arrow-up-down": '<path d="M12 3v18"/><path d="m17 8-5-5-5 5"/><path d="m7 16 5 5 5-5"/>',
     "arrow-up-right": '<path d="M7 17 17 7"/><path d="M7 7h10v10"/>',
     "check": '<path d="m5 12 4 4L19 6"/>',
     "chevron-right": '<path d="m9 18 6-6-6-6"/>',

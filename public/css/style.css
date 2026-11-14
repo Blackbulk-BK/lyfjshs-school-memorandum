@@ -234,33 +234,6 @@ button,
   background: #fbfaf6;
 }
 
-.archive-sort {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: #647168;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.archive-sort select {
-  min-height: 43px;
-  max-width: 100%;
-  padding: 8px 32px 8px 11px;
-  border: 1px solid #e0e4dc;
-  border-radius: 9px;
-  background: #fffefa;
-  color: var(--ink);
-  font: inherit;
-  font-weight: 500;
-}
-
-.archive-sort select:focus {
-  border-color: #88a690;
-  outline: none;
-  box-shadow: 0 0 0 4px rgb(33 77 59 / 9%);
-}
-
 .search {
   position: relative;
   display: flex;
@@ -394,6 +367,65 @@ th {
   text-transform: uppercase;
 }
 
+.sortable-heading {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 8px 3px 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  text-transform: inherit;
+  transition: color 160ms ease;
+}
+
+.sortable-heading:hover,
+.sortable-heading.is-sorted {
+  color: var(--forest);
+}
+
+.sortable-heading:focus-visible {
+  outline: 2px solid rgb(33 77 59 / 35%);
+  outline-offset: 2px;
+}
+
+.sort-indicator {
+  display: inline-flex;
+  width: 23px;
+  height: 23px;
+  flex: 0 0 23px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: #9aa49a;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.sort-indicator .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.sortable-heading:hover .sort-indicator {
+  transform: translateY(-1px);
+  border-color: #dce8dc;
+  background: #fffefa;
+  color: #52745c;
+}
+
+.sortable-heading.is-sorted .sort-indicator {
+  border-color: #d4e4d5;
+  background: #e9f1e9;
+  color: var(--forest);
+}
+
 td {
   padding: 18px 26px;
   border-bottom: 1px solid #efefe8;
@@ -431,6 +463,13 @@ td.date,
 th.date {
   text-align: right;
   white-space: nowrap;
+}
+
+th.date .sortable-heading {
+  justify-content: flex-end;
+  margin-left: auto;
+  padding-right: 0;
+  padding-left: 8px;
 }
 
 .empty {
@@ -1124,15 +1163,6 @@ th.date {
     padding: 12px;
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .archive-sort {
-    justify-content: space-between;
-  }
-
-  .archive-sort select {
-    flex: 1;
-    width: 1px;
   }
 
   .search input {
