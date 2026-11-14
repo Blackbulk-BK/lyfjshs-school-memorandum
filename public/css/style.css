@@ -226,10 +226,39 @@ button,
 
 .panel-top {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   padding: 18px 22px;
   border-bottom: 1px solid var(--line);
   background: #fbfaf6;
+}
+
+.archive-sort {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #647168;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.archive-sort select {
+  min-height: 43px;
+  max-width: 100%;
+  padding: 8px 32px 8px 11px;
+  border: 1px solid #e0e4dc;
+  border-radius: 9px;
+  background: #fffefa;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+}
+
+.archive-sort select:focus {
+  border-color: #88a690;
+  outline: none;
+  box-shadow: 0 0 0 4px rgb(33 77 59 / 9%);
 }
 
 .search {
@@ -697,6 +726,11 @@ th.date {
   font-weight: 600;
 }
 
+.field-hint {
+  color: #7a857c;
+  font-size: 0.74rem;
+}
+
 .form-row input,
 .recipient-entry input {
   width: 100%;
@@ -1088,6 +1122,17 @@ th.date {
 
   .panel-top {
     padding: 12px;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .archive-sort {
+    justify-content: space-between;
+  }
+
+  .archive-sort select {
+    flex: 1;
+    width: 1px;
   }
 
   .search input {

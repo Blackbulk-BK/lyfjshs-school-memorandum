@@ -4,6 +4,8 @@ Website where one uploader posts school memorandums (PDF, Excel, Word, any file)
 
 **Stack:** HTML + CSS + JavaScript (browser) · Node.js functions (server) · Supabase (database, login, file storage) · Brevo (email) · Vercel (hosting)
 
+The public archive searches by memorandum number or title and can be sorted by memorandum number, title, or issue date. When uploading, enter the memorandum number (for example, `123`); it is saved as `SM NO. 123 s. <current year>`.
+
 ## Files
 
 | File | Language | What it does |

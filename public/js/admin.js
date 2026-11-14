@@ -28,6 +28,11 @@
       </tr>`).join('') || '<tr><td colspan="4" class="empty">No memorandums published yet.</td></tr>';
   }
 
+  function formatMemoNumber(value) {
+    const match = value.trim().match(/^(?:SM\s*NO\.?\s*)?(\d+)(?:\s+s\.\s*\d{4})?$/i);
+    return match ? `SM NO. ${match[1]} s. ${new Date().getFullYear()}` : value.trim();
+  }
+
   rows.addEventListener('click', async (e) => {
     const id = e.target.dataset && e.target.dataset.id;
     if (!id) return;
@@ -59,7 +64,7 @@
       }
 
       const ins = await sb.from('memorandums').insert({
-        memo_no: document.getElementById('memo-no').value.trim(),
+        memo_no: formatMemoNumber(document.getElementById('memo-no').value),
         title: document.getElementById('title').value.trim(),
         memo_date: document.getElementById('date').value,
         file_path: path,

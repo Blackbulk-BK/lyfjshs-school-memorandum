@@ -37,6 +37,17 @@
           <input id="search-input" name="q" placeholder="Search by title or memo number">
           <button type="submit" aria-label="Search memorandums">Search</button>
         </form>
+        <div class="archive-sort">
+          <label for="sort-select">Sort by</label>
+          <select id="sort-select">
+            <option value="date-desc">Date: newest first</option>
+            <option value="date-asc">Date: oldest first</option>
+            <option value="number-asc">Memo number: low to high</option>
+            <option value="number-desc">Memo number: high to low</option>
+            <option value="title-asc">Title: A to Z</option>
+            <option value="title-desc">Title: Z to A</option>
+          </select>
+        </div>
       </div>
 
       <div class="section-heading">

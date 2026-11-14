@@ -4,7 +4,11 @@
   // remove characters that would break the filter
   const searchInput = document.getElementById('search-input');
   const form = searchInput.form;
+  const sortSelect = document.getElementById('sort-select');
   const initialQuery = (params.get('q') || '').replace(/[%,()*\\]/g, ' ').trim();
+  const validSorts = ['date-desc', 'date-asc', 'number-asc', 'number-desc', 'title-asc', 'title-desc'];
+  const initialSort = params.get('sort');
+  if (validSorts.includes(initialSort)) sortSelect.value = initialSort;
   searchInput.value = initialQuery;
 
   const tbody = document.getElementById('memo-rows');
@@ -18,11 +22,12 @@
     const url = new URL(location.href);
     if (q) url.searchParams.set('q', q);
     else url.searchParams.delete('q');
+    url.searchParams.set('sort', sortSelect.value);
     history.replaceState(null, '', url);
 
     tbody.innerHTML = '<tr><td colspan="3" class="empty"><span class="loading-mark"></span>Loading memorandums</td></tr>';
 
-    let query = sb.from('memorandums').select('*').order('memo_date', { ascending: false });
+    let query = sb.from('memorandums').select('*');
     if (q) query = query.or(`title.ilike.%${q}%,memo_no.ilike.%${q}%`);
     const { data, error } = await query;
 
@@ -36,7 +41,22 @@
       return;
     }
 
-    tbody.innerHTML = data.map((m) => `
+    const [field, direction] = sortSelect.value.split('-');
+    const ascending = direction === 'asc';
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    const sorted = [...data].sort((a, b) => {
+      let comparison;
+      if (field === 'date') {
+        comparison = String(a.memo_date || '').localeCompare(String(b.memo_date || ''));
+      } else if (field === 'title') {
+        comparison = collator.compare(a.title || '', b.title || '');
+      } else {
+        comparison = collator.compare(a.memo_no || '', b.memo_no || '');
+      }
+      return ascending ? comparison : -comparison;
+    });
+
+    tbody.innerHTML = sorted.map((m) => `
       <tr>
         <td><a href="/memo/${esc(m.id)}">${SchoolIcons.svg('file-text')}<span>${esc(m.memo_no)}</span></a></td>
         <td>${esc(m.title)}</td>
@@ -55,6 +75,8 @@
     clearTimeout(debounceTimer);
     loadMemorandums(searchInput.value);
   });
+
+  sortSelect.addEventListener('change', () => loadMemorandums(searchInput.value));
 
   await loadMemorandums(initialQuery);
 })();
