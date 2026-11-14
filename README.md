@@ -33,6 +33,7 @@ Website where one uploader posts school memorandums (PDF, Excel, Word, any file)
 1. Sign up at https://www.brevo.com
 2. Senders, Domains & IPs > Senders > add and verify your school Gmail.
 3. SMTP & API > SMTP > copy the login and generate an SMTP key.
+4. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (the SMTP key), and `MAIL_FROM` in `.env` or Vercel Environment Variables. `SMTP_PASS` is required; use port 587 or 465.
 
 ## 3. Run on your computer
 

@@ -10,7 +10,8 @@ if (!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
   console.error('Missing SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY in your .env file.');
   process.exit(1);
 }
-if (!process.env.SMTP_HOST && !(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD)) {
+if (!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) &&
+    !(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD)) {
   console.warn('WARNING: email sending is not set up yet (see .env.example). Sharing by email will fail.');
 }
 

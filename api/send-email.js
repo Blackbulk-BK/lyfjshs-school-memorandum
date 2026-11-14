@@ -7,10 +7,17 @@ const BATCH_SIZE = 50; // recipients per email (hidden with BCC)
 function buildTransporter() {
   // Option A: Brevo (or any SMTP service) when SMTP_HOST is set
   if (process.env.SMTP_HOST) {
+    const port = Number(process.env.SMTP_PORT || 587);
+    if (!Number.isInteger(port) || port < 1 || port > 65535) {
+      throw new Error('SMTP_PORT must be a valid port number.');
+    }
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      throw new Error('SMTP_USER and SMTP_PASS are required when SMTP_HOST is set. For Brevo, SMTP_PASS must be your SMTP key.');
+    }
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: false,
+      port,
+      secure: port === 465,
       auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
     });
   }
@@ -22,6 +29,20 @@ function buildTransporter() {
     });
   }
   return null;
+}
+
+function getDeliveryError(err) {
+  const responseCode = Number(err && err.responseCode);
+  if ((err && err.code === 'EAUTH') || responseCode === 534 || responseCode === 535) {
+    return 'SMTP authentication failed. Check SMTP_USER and SMTP_PASS; for Brevo, use the SMTP key as SMTP_PASS.';
+  }
+  if (responseCode === 550 || responseCode === 553) {
+    return 'The SMTP server rejected the sender. Check that MAIL_FROM is a verified sender address.';
+  }
+  if (err && ['ECONNECTION', 'ETIMEDOUT', 'ESOCKET'].includes(err.code)) {
+    return 'Could not connect to the SMTP server. Check SMTP_HOST and SMTP_PORT.';
+  }
+  return 'Email delivery failed. Check the SMTP or Gmail settings.';
 }
 
 module.exports = async (req, res) => {
@@ -59,7 +80,12 @@ module.exports = async (req, res) => {
     const { data: memo } = await userDb.from('memorandums').select('*').eq('id', memoId).maybeSingle();
     if (!memo) return res.status(404).json({ error: 'Memorandum not found.' });
 
-    const transporter = buildTransporter();
+    let transporter;
+    try {
+      transporter = buildTransporter();
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
     if (!transporter) return res.status(500).json({ error: 'Email sending is not set up on the server.' });
 
     const fromAddress = process.env.MAIL_FROM || process.env.GMAIL_USER || process.env.SMTP_USER;
@@ -97,6 +123,7 @@ module.exports = async (req, res) => {
 
     let sent = 0;
     let failed = 0;
+    let deliveryError;
     for (let g = 0; g < groups.length; g++) {
       const bcc = groups[g];
       const first = g === 0;
@@ -116,6 +143,7 @@ module.exports = async (req, res) => {
         );
       } catch (err) {
         console.error('Could not send memorandum email batch:', err);
+        deliveryError = deliveryError || getDeliveryError(err);
         failed += emailed.length;
         const { error: logError } = await userDb.from('share_logs').insert(
           emailed.map((email) => ({
@@ -132,7 +160,7 @@ module.exports = async (req, res) => {
     const total = sent + failed;
     if (sent === 0) {
       return res.status(502).json({
-        error: 'Email delivery failed. Check the SMTP or Gmail settings.',
+        error: deliveryError || 'Email delivery failed. Check the SMTP or Gmail settings.',
         sent,
         failed,
         total,
