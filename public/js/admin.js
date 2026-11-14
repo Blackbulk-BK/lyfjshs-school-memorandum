@@ -14,6 +14,8 @@
   const form = document.getElementById('upload-form');
   const btn = document.getElementById('upload-btn');
   const msg = document.getElementById('upload-msg');
+  const deleteMsg = document.getElementById('delete-msg');
+  const deleteDialog = document.getElementById('delete-dialog');
   let memos = [];
 
   async function loadMemos() {
@@ -34,13 +36,42 @@
   }
 
   rows.addEventListener('click', async (e) => {
-    const id = e.target.dataset && e.target.dataset.id;
+    const deleteButton = e.target.closest('[data-id]');
+    const id = deleteButton && deleteButton.dataset.id;
     if (!id) return;
     const memo = memos.find((m) => m.id === id);
-    if (!memo || !confirm(`Delete ${memo.memo_no}?`)) return;
-    await sb.storage.from(BUCKET).remove([memo.file_path]);
-    await sb.from('memorandums').delete().eq('id', id);
-    loadMemos();
+    if (!memo) return;
+
+    document.getElementById('delete-memo-number').textContent = memo.memo_no;
+    document.getElementById('delete-memo-title').textContent = memo.title;
+    deleteDialog.returnValue = 'cancel';
+    deleteDialog.showModal();
+    await new Promise((resolve) => deleteDialog.addEventListener('close', resolve, { once: true }));
+    if (deleteDialog.returnValue !== 'confirm') return;
+
+    deleteMsg.textContent = '';
+    deleteButton.disabled = true;
+    try {
+      const { error: storageError } = await sb.storage.from(BUCKET).remove([memo.file_path]);
+      if (storageError) {
+        deleteMsg.textContent = `Could not delete the uploaded file: ${storageError.message}`;
+        return;
+      }
+
+      const { error: deleteError } = await sb.from('memorandums').delete().eq('id', id);
+      if (deleteError) {
+        deleteMsg.textContent = `The file was removed, but the memorandum could not be deleted: ${deleteError.message}`;
+        return;
+      }
+
+      deleteMsg.textContent = `${memo.memo_no} was deleted from the archive.`;
+      await loadMemos();
+    } catch (error) {
+      console.error('Could not delete memorandum:', error);
+      deleteMsg.textContent = 'Could not delete the memorandum. Please try again.';
+    } finally {
+      deleteButton.disabled = false;
+    }
   });
 
   form.addEventListener('submit', async (e) => {

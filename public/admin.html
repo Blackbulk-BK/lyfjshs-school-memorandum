@@ -91,6 +91,7 @@
         <div><p class="eyebrow">YOUR LIBRARY</p><h2>Published memorandums</h2></div>
         <span class="section-note">Manage notices in the public archive</span>
       </div>
+      <p class="msg archive-delete-msg" id="delete-msg" role="status" aria-live="polite"></p>
       <div class="directory-card table-wrap">
         <table>
           <thead>
@@ -102,6 +103,23 @@
       </section>
     </div>
   </main>
+
+  <dialog class="delete-dialog" id="delete-dialog" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-description">
+    <div class="delete-dialog-content">
+      <span class="delete-dialog-icon"><i data-icon="trash"></i></span>
+      <p class="eyebrow">DELETE MEMORANDUM</p>
+      <h2 id="delete-dialog-title">Remove this notice?</h2>
+      <p id="delete-dialog-description">This will permanently remove the memorandum and its uploaded file from the archive.</p>
+      <div class="delete-memo-preview">
+        <strong id="delete-memo-number"></strong>
+        <span id="delete-memo-title"></span>
+      </div>
+      <form method="dialog" class="delete-dialog-actions">
+        <button class="btn btn-outline" type="submit" value="cancel">Keep memorandum</button>
+        <button class="btn delete-confirm-btn" type="submit" value="confirm"><i data-icon="trash"></i><span>Delete permanently</span></button>
+      </form>
+    </div>
+  </dialog>
 
   <script src="/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>

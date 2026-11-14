@@ -943,6 +943,135 @@ th.date .sort-menu {
   margin: 0;
 }
 
+.archive-delete-msg:not(:empty) {
+  margin: 0 0 10px;
+  padding: 10px 13px;
+  border: 1px solid #dfe9df;
+  border-radius: 9px;
+  background: #f0f5ef;
+  color: var(--forest-dark);
+}
+
+.delete-dialog {
+  width: min(440px, calc(100vw - 32px));
+  max-width: none;
+  padding: 0;
+  overflow: visible;
+  border: 1px solid #e6e9e1;
+  border-radius: 18px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 28px 80px rgb(20 35 25 / 25%), 0 4px 14px rgb(20 35 25 / 10%);
+}
+
+.delete-dialog[open] {
+  animation: delete-dialog-arrive 180ms cubic-bezier(.2, .7, .25, 1) both;
+}
+
+.delete-dialog::backdrop {
+  background: rgb(25 37 29 / 48%);
+  backdrop-filter: blur(3px);
+  animation: delete-backdrop-arrive 180ms ease-out both;
+}
+
+.delete-dialog-content {
+  padding: clamp(24px, 6vw, 34px);
+}
+
+.delete-dialog-icon {
+  display: inline-grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  margin-bottom: 20px;
+  border: 1px solid #f0d9d2;
+  border-radius: 16px;
+  background: #fcf0ec;
+  color: #a24f41;
+}
+
+.delete-dialog-icon .icon {
+  width: 23px;
+  height: 23px;
+}
+
+.delete-dialog .eyebrow {
+  margin-bottom: 7px;
+  color: #a56755;
+  font-size: 0.63rem;
+}
+
+.delete-dialog h2 {
+  margin: 0;
+  color: var(--forest-dark);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.65rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+#delete-dialog-description {
+  margin: 10px 0 19px;
+  color: #748078;
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.delete-memo-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid #e7eae3;
+  border-radius: 10px;
+  background: #f8f8f3;
+}
+
+.delete-memo-preview strong {
+  color: var(--forest-dark);
+  font-size: 0.82rem;
+}
+
+.delete-memo-preview span {
+  overflow-wrap: anywhere;
+  color: #737e75;
+  font-size: 0.79rem;
+}
+
+.delete-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 23px;
+}
+
+.delete-confirm-btn {
+  border-color: #a24f41;
+  background: #a24f41;
+}
+
+.delete-confirm-btn:hover {
+  background: #873e34;
+  box-shadow: 0 5px 14px rgb(135 62 52 / 18%);
+}
+
+@keyframes delete-dialog-arrive {
+  from {
+    transform: translateY(8px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes delete-backdrop-arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .recipient-panel {
   max-height: 330px;
   border: 1px solid var(--line);
@@ -1259,6 +1388,14 @@ th.date .sort-menu {
   .directory-card,
   .memo-sheet {
     border-radius: 13px;
+  }
+
+  .delete-dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .delete-dialog-actions .btn {
+    width: 100%;
   }
 
   .panel-top {
