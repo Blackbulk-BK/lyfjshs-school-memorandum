@@ -4,7 +4,8 @@
   // remove characters that would break the filter
   const searchInput = document.getElementById('search-input');
   const form = searchInput.form;
-  const sortButtons = Array.from(document.querySelectorAll('[data-sort-field]'));
+  const sortTriggers = Array.from(document.querySelectorAll('.sort-trigger'));
+  const sortOptions = Array.from(document.querySelectorAll('[data-sort-option]'));
   const initialQuery = (params.get('q') || '').replace(/[%,()*\\]/g, ' ').trim();
   const validFields = ['date', 'number', 'title'];
   const [initialField, initialDirection] = (params.get('sort') || 'date-desc').split('-');
@@ -20,34 +21,40 @@
   let latestRequest = 0;
   let debounceTimer;
 
-  function updateSortButtons() {
-    sortButtons.forEach((button) => {
-      const field = button.dataset.sortField;
-      const active = field === sort.field;
-      const direction = active ? sort.direction : null;
-      const indicator = button.querySelector('.sort-indicator');
-      const heading = field === 'date' ? 'date issued' : field === 'number' ? 'memorandum number' : 'title';
-      const directionLabels = {
-        date: { asc: 'oldest first', desc: 'newest first' },
-        number: { asc: 'low to high', desc: 'high to low' },
-        title: { asc: 'A to Z', desc: 'Z to A' },
-      };
+  function closeSortMenus(returnFocus) {
+    document.querySelectorAll('.sort-menu:not([hidden])').forEach((menu) => {
+      menu.hidden = true;
+      const trigger = menu.parentElement.querySelector('.sort-trigger');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (returnFocus) trigger.focus();
+    });
+  }
 
-      button.classList.toggle('is-sorted', active);
-      button.setAttribute('aria-label', active
-        ? `Sort by ${heading}; currently ${directionLabels[field][direction]}. Click to reverse the order.`
-        : `Sort by ${heading}.`);
-      indicator.innerHTML = SchoolIcons.svg(
-        direction ? (direction === 'asc' ? 'arrow-up' : 'arrow-down') : 'arrow-up-down'
+  function updateSortButtons() {
+    sortTriggers.forEach((trigger) => {
+      const menu = trigger.parentElement.querySelector('.sort-menu');
+      const field = menu.querySelector('[data-sort-option]').dataset.sortOption.split('-')[0];
+      const active = field === sort.field;
+      trigger.classList.toggle('is-sorted', active);
+      trigger.setAttribute('aria-label', `Sort ${field === 'date' ? 'date issued' : field === 'number' ? 'memorandum number' : 'title'}`);
+      trigger.innerHTML = SchoolIcons.svg(
+        active ? (sort.direction === 'asc' ? 'arrow-up' : 'arrow-down') : 'arrow-up-down'
       );
     });
 
+    sortOptions.forEach((option) => {
+      const selected = option.dataset.sortOption === `${sort.field}-${sort.direction}`;
+      option.setAttribute('aria-pressed', String(selected));
+      option.classList.toggle('is-selected', selected);
+    });
+
     headers.forEach((header) => {
-      const button = header.querySelector('[data-sort-field]');
-      if (!button) return;
+      const option = header.querySelector('[data-sort-option]');
+      if (!option) return;
+      const field = option.dataset.sortOption.split('-')[0];
       header.setAttribute(
         'aria-sort',
-        button.dataset.sortField === sort.field
+        field === sort.field
           ? (sort.direction === 'asc' ? 'ascending' : 'descending')
           : 'none'
       );
@@ -112,18 +119,34 @@
     loadMemorandums(searchInput.value);
   });
 
-  sortButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      const field = button.dataset.sortField;
-      if (field === sort.field) {
-        sort.direction = sort.direction === 'asc' ? 'desc' : 'asc';
-      } else {
-        sort.field = field;
-        sort.direction = field === 'date' ? 'desc' : 'asc';
-      }
+  sortTriggers.forEach((trigger) => {
+    trigger.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const menu = trigger.parentElement.querySelector('.sort-menu');
+      const shouldOpen = menu.hidden;
+      closeSortMenus(false);
+      if (!shouldOpen) return;
+      menu.hidden = false;
+      trigger.setAttribute('aria-expanded', 'true');
+      menu.querySelector('[aria-pressed="true"]')?.focus();
+    });
+  });
+
+  sortOptions.forEach((option) => {
+    option.addEventListener('click', () => {
+      [sort.field, sort.direction] = option.dataset.sortOption.split('-');
       updateSortButtons();
+      closeSortMenus(true);
       loadMemorandums(searchInput.value);
     });
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.sort-control')) closeSortMenus(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeSortMenus(true);
   });
 
   updateSortButtons();

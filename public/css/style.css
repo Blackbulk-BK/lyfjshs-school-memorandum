@@ -369,61 +369,160 @@ th {
 
 .sortable-heading {
   display: inline-flex;
-  min-height: 30px;
   align-items: center;
-  gap: 8px;
-  padding: 3px 8px 3px 0;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
+  gap: 7px;
   color: inherit;
-  cursor: pointer;
   font: inherit;
   letter-spacing: inherit;
   text-align: left;
   text-transform: inherit;
-  transition: color 160ms ease;
 }
 
-.sortable-heading:hover,
-.sortable-heading.is-sorted {
-  color: var(--forest);
-}
-
-.sortable-heading:focus-visible {
-  outline: 2px solid rgb(33 77 59 / 35%);
-  outline-offset: 2px;
-}
-
-.sort-indicator {
+.sort-control {
+  position: relative;
   display: inline-flex;
-  width: 23px;
-  height: 23px;
-  flex: 0 0 23px;
+  align-items: center;
+}
+
+.sort-trigger {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
   align-items: center;
   justify-content: center;
+  padding: 0;
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: 8px;
+  background: transparent;
   color: #9aa49a;
-  transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
-.sort-indicator .icon {
-  width: 15px;
-  height: 15px;
+.sort-trigger .icon {
+  width: 16px;
+  height: 16px;
 }
 
-.sortable-heading:hover .sort-indicator {
+.sort-trigger:hover {
   transform: translateY(-1px);
   border-color: #dce8dc;
   background: #fffefa;
   color: #52745c;
 }
 
-.sortable-heading.is-sorted .sort-indicator {
+.sort-trigger.is-sorted {
   border-color: #d4e4d5;
   background: #e9f1e9;
   color: var(--forest);
+}
+
+.sort-trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(33 77 59 / 14%);
+}
+
+.sort-menu {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 9px);
+  left: -8px;
+  width: max-content;
+  min-width: 220px;
+  padding: 7px;
+  border: 1px solid #e4e9e1;
+  border-radius: 13px;
+  background: #fffefa;
+  box-shadow: 0 14px 34px rgb(31 48 36 / 16%), 0 3px 8px rgb(31 48 36 / 7%);
+  color: var(--ink);
+  animation: sort-menu-arrive 150ms ease-out both;
+}
+
+.sort-menu[hidden] {
+  display: none;
+}
+
+.sort-menu-title {
+  margin: 3px 9px 6px;
+  color: #88938a;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.sort-option {
+  display: flex;
+  width: 100%;
+  min-height: 40px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 9px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #46534a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  text-align: left;
+  transition: background 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.sort-option > .icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: #869289;
+}
+
+.sort-option span {
+  flex: 1;
+}
+
+.sort-option .sort-check {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: var(--forest);
+  opacity: 0;
+}
+
+.sort-option:hover {
+  transform: translateX(1px);
+  background: #f3f6f0;
+  color: var(--forest-dark);
+}
+
+.sort-option.is-selected {
+  background: #e9f1e9;
+  color: var(--forest-dark);
+  font-weight: 600;
+}
+
+.sort-option.is-selected > .icon {
+  color: var(--forest);
+}
+
+.sort-option.is-selected .sort-check {
+  opacity: 1;
+}
+
+.sort-option:focus-visible {
+  outline: 2px solid rgb(33 77 59 / 35%);
+  outline-offset: -2px;
+}
+
+@keyframes sort-menu-arrive {
+  from {
+    transform: translateY(-4px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 td {
@@ -468,8 +567,11 @@ th.date {
 th.date .sortable-heading {
   justify-content: flex-end;
   margin-left: auto;
-  padding-right: 0;
-  padding-left: 8px;
+}
+
+th.date .sort-menu {
+  right: -8px;
+  left: auto;
 }
 
 .empty {

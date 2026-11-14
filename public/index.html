@@ -52,19 +52,61 @@
           <thead>
             <tr>
               <th aria-sort="none">
-                <button class="sortable-heading" type="button" data-sort-field="number">
-                  <span>Memorandum</span><span class="sort-indicator"><i data-icon="arrow-up-down"></i></span>
-                </button>
+                <div class="sortable-heading">
+                  <span>Memorandum</span>
+                  <div class="sort-control">
+                    <button class="sort-trigger" type="button" aria-label="Sort memorandum number" aria-controls="sort-number-menu" aria-expanded="false">
+                      <i data-icon="arrow-up-down"></i>
+                    </button>
+                    <div class="sort-menu" id="sort-number-menu" role="group" aria-label="Sort memorandum number" hidden>
+                      <p class="sort-menu-title">Sort memorandum</p>
+                      <button class="sort-option" type="button" aria-pressed="false" data-sort-option="number-asc">
+                        <i data-icon="arrow-up"></i><span>Number: low to high</span><i class="sort-check" data-icon="check"></i>
+                      </button>
+                      <button class="sort-option" type="button" aria-pressed="false" data-sort-option="number-desc">
+                        <i data-icon="arrow-down"></i><span>Number: high to low</span><i class="sort-check" data-icon="check"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </th>
               <th aria-sort="none">
-                <button class="sortable-heading" type="button" data-sort-field="title">
-                  <span>Title</span><span class="sort-indicator"><i data-icon="arrow-up-down"></i></span>
-                </button>
+                <div class="sortable-heading">
+                  <span>Title</span>
+                  <div class="sort-control">
+                    <button class="sort-trigger" type="button" aria-label="Sort title" aria-controls="sort-title-menu" aria-expanded="false">
+                      <i data-icon="arrow-up-down"></i>
+                    </button>
+                    <div class="sort-menu" id="sort-title-menu" role="group" aria-label="Sort title" hidden>
+                      <p class="sort-menu-title">Sort title</p>
+                      <button class="sort-option" type="button" aria-pressed="false" data-sort-option="title-asc">
+                        <i data-icon="arrow-up"></i><span>Title: A to Z</span><i class="sort-check" data-icon="check"></i>
+                      </button>
+                      <button class="sort-option" type="button" aria-pressed="false" data-sort-option="title-desc">
+                        <i data-icon="arrow-down"></i><span>Title: Z to A</span><i class="sort-check" data-icon="check"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </th>
               <th class="date" aria-sort="descending">
-                <button class="sortable-heading" type="button" data-sort-field="date">
-                  <span>Date issued</span><span class="sort-indicator"><i data-icon="arrow-down"></i></span>
-                </button>
+                <div class="sortable-heading">
+                  <span>Date issued</span>
+                  <div class="sort-control">
+                    <button class="sort-trigger" type="button" aria-label="Sort date issued" aria-controls="sort-date-menu" aria-expanded="false">
+                      <i data-icon="arrow-down"></i>
+                    </button>
+                    <div class="sort-menu" id="sort-date-menu" role="group" aria-label="Sort date issued" hidden>
+                      <p class="sort-menu-title">Sort by date</p>
+                      <button class="sort-option" type="button" aria-pressed="false" data-sort-option="date-desc">
+                        <i data-icon="arrow-down"></i><span>Date: newest first</span><i class="sort-check" data-icon="check"></i>
+                      </button>
+                      <button class="sort-option" type="button" aria-pressed="false" data-sort-option="date-asc">
+                        <i data-icon="arrow-up"></i><span>Date: oldest first</span><i class="sort-check" data-icon="check"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </th>
             </tr>
           </thead>
