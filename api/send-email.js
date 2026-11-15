@@ -109,11 +109,60 @@ module.exports = async (req, res) => {
     const fileLink = userDb.storage.from('memorandums').getPublicUrl(memo.file_path).data.publicUrl;
 
     const subject = `${memo.memo_no} — ${memo.title}`;
+    const preheader = `${memo.memo_no}: ${memo.title}. Open the school memorandum and download the file.`;
     const html = `
-      <p>A school memorandum has been shared with you.</p>
-      <p><strong>${esc(memo.memo_no)}</strong><br>${esc(memo.title)}<br>${esc(memo.memo_date)}</p>
-      <p><a href="${esc(pageUrl)}">View the memorandum</a><br>
-         <a href="${esc(fileLink)}">Download the file</a></p>`;
+      <div style="display:none;font-size:1px;color:#f4f6f4;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">
+        ${esc(preheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+      </div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f6f4;margin:0;padding:32px 12px;font-family:Arial,Helvetica,sans-serif;color:#26332d;">
+        <tr><td align="center">
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background-color:#ffffff;border:1px solid #e4e9e5;border-radius:12px;overflow:hidden;">
+            <tr>
+              <td style="background-color:#214d3b;padding:24px 32px;">
+                <p style="margin:0;color:#dce9df;font-size:11px;line-height:16px;letter-spacing:1.5px;text-transform:uppercase;">Luis Y. Ferrer Jr. Senior High School</p>
+                <p style="margin:5px 0 0;color:#ffffff;font-family:Georgia,'Times New Roman',serif;font-size:21px;line-height:28px;">School Memorandum</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <p style="margin:0 0 20px;color:#526158;font-size:15px;line-height:24px;">A new memorandum has been shared with you.</p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f7f9f7;border-left:4px solid #4d8064;">
+                  <tr><td style="padding:20px 22px;">
+                    <p style="margin:0 0 8px;color:#477257;font-size:12px;font-weight:bold;line-height:18px;letter-spacing:1px;text-transform:uppercase;">${esc(memo.memo_no)}</p>
+                    <h1 style="margin:0 0 12px;color:#24372c;font-family:Georgia,'Times New Roman',serif;font-size:23px;font-weight:normal;line-height:30px;">${esc(memo.title)}</h1>
+                    <p style="margin:0;color:#657168;font-size:14px;line-height:21px;">Issued ${esc(memo.memo_date)}</p>
+                  </td></tr>
+                </table>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;">
+                  <tr><td align="center" style="background-color:#214d3b;border-radius:6px;">
+                    <a href="${esc(pageUrl)}" style="display:inline-block;padding:13px 20px;color:#ffffff;font-size:14px;font-weight:bold;line-height:20px;text-decoration:none;">View memorandum</a>
+                  </td></tr>
+                </table>
+                <p style="margin:20px 0 0;color:#657168;font-size:14px;line-height:22px;">
+                  Or <a href="${esc(fileLink)}" style="color:#285f43;text-decoration:underline;">download the memorandum file</a>.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="border-top:1px solid #e8ece9;padding:18px 32px;">
+                <p style="margin:0;color:#879189;font-size:12px;line-height:18px;">Luis Y. Ferrer Jr. Senior High School<br>School Memorandum Archive</p>
+              </td>
+            </tr>
+          </table>
+        </td></tr>
+      </table>`;
+    const text = [
+      'A new school memorandum has been shared with you.',
+      '',
+      memo.memo_no,
+      memo.title,
+      `Issued ${memo.memo_date}`,
+      '',
+      `View memorandum: ${pageUrl}`,
+      `Download the memorandum file: ${fileLink}`,
+      '',
+      'Luis Y. Ferrer Jr. Senior High School — School Memorandum Archive',
+    ].join('\n');
 
     // The built-in email is in "to" of the first message,
     // everybody else is in BCC so they cannot see each other's emails.
@@ -136,6 +185,7 @@ module.exports = async (req, res) => {
           bcc: bcc.length ? bcc : undefined,
           subject,
           html,
+          text,
         });
         sent += emailed.length;
         await userDb.from('share_logs').insert(
