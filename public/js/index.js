@@ -3,10 +3,19 @@
   const params = new URLSearchParams(location.search);
   // remove characters that would break the filter
   const searchInput = document.getElementById('search-input');
+  const dateInput = document.getElementById('date-filter-input');
+  const clearDateButton = document.getElementById('clear-date-filter');
   const form = searchInput.form;
   const sortTriggers = Array.from(document.querySelectorAll('.sort-trigger'));
   const sortOptions = Array.from(document.querySelectorAll('[data-sort-option]'));
   const initialQuery = (params.get('q') || '').replace(/[%,()*\\]/g, ' ').trim();
+  const requestedDate = params.get('date') || '';
+  const parsedDate = new Date(`${requestedDate}T00:00:00Z`);
+  const initialDate = /^\d{4}-\d{2}-\d{2}$/.test(requestedDate)
+    && !Number.isNaN(parsedDate.getTime())
+    && parsedDate.toISOString().slice(0, 10) === requestedDate
+    ? requestedDate
+    : '';
   const validFields = ['date', 'number', 'title'];
   const [initialField, initialDirection] = (params.get('sort') || 'date-desc').split('-');
   const sort = {
@@ -14,6 +23,8 @@
     direction: initialDirection === 'asc' ? 'asc' : 'desc',
   };
   searchInput.value = initialQuery;
+  dateInput.value = initialDate;
+  clearDateButton.hidden = !initialDate;
 
   const tbody = document.getElementById('memo-rows');
   const headers = Array.from(document.querySelectorAll('thead th'));
@@ -61,19 +72,23 @@
     });
   }
 
-  async function loadMemorandums(rawQuery) {
+  async function loadMemorandums(rawQuery, selectedDate = dateInput.value) {
     const requestId = ++latestRequest;
     const q = rawQuery.replace(/[%,()*\\]/g, ' ').trim();
     const url = new URL(location.href);
     if (q) url.searchParams.set('q', q);
     else url.searchParams.delete('q');
+    if (selectedDate) url.searchParams.set('date', selectedDate);
+    else url.searchParams.delete('date');
     url.searchParams.set('sort', `${sort.field}-${sort.direction}`);
     history.replaceState(null, '', url);
+    clearDateButton.hidden = !selectedDate;
 
     tbody.innerHTML = '<tr><td colspan="3" class="empty"><span class="loading-mark"></span>Loading memorandums</td></tr>';
 
     let query = sb.from('memorandums').select('*');
     if (q) query = query.or(`title.ilike.%${q}%,memo_no.ilike.%${q}%`);
+    if (selectedDate) query = query.eq('memo_date', selectedDate);
     const { data, error } = await query;
 
     if (requestId !== latestRequest) return;
@@ -82,7 +97,7 @@
       return;
     }
     if (!data.length) {
-      tbody.innerHTML = '<tr><td colspan="3" class="empty">No memorandum found.</td></tr>';
+      tbody.innerHTML = `<tr><td colspan="3" class="empty">${selectedDate ? 'No memorandums found for this date.' : 'No memorandum found.'}</td></tr>`;
       return;
     }
 
@@ -117,6 +132,16 @@
     event.preventDefault();
     clearTimeout(debounceTimer);
     loadMemorandums(searchInput.value);
+  });
+
+  dateInput.addEventListener('change', () => {
+    loadMemorandums(searchInput.value, dateInput.value);
+  });
+
+  clearDateButton.addEventListener('click', () => {
+    dateInput.value = '';
+    loadMemorandums(searchInput.value, '');
+    dateInput.focus();
   });
 
   sortTriggers.forEach((trigger) => {

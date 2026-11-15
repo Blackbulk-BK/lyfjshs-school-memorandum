@@ -227,11 +227,50 @@ button,
 .panel-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
   padding: 18px 22px;
   border-bottom: 1px solid var(--line);
   background: #fbfaf6;
+}
+
+.date-filter {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #738078;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.date-filter input {
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid #e0e4dc;
+  border-radius: 9px;
+  background: #fffefa;
+  color: var(--ink);
+  font: inherit;
+}
+
+.date-filter input:focus {
+  border-color: #88a690;
+  outline: none;
+  box-shadow: 0 0 0 4px rgb(33 77 59 / 9%);
+}
+
+.date-filter button {
+  padding: 7px 10px;
+  border: 1px solid #dfe5df;
+  border-radius: 7px;
+  background: #fffefa;
+  color: var(--forest);
+  cursor: pointer;
+  font: inherit;
+}
+
+.date-filter button:hover {
+  background: #eef3ee;
 }
 
 .search {
@@ -1402,6 +1441,18 @@ th.date .sort-menu {
     padding: 12px;
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .search {
+    width: 100%;
+  }
+
+  .date-filter {
+    flex-wrap: wrap;
+  }
+
+  .date-filter input {
+    min-height: 39px;
   }
 
   .search input {
