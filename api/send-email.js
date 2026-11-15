@@ -1,5 +1,7 @@
 // POST /api/send-email : emails a memorandum (only the logged-in uploader).
 const nodemailer = require('nodemailer');
+const fs = require('fs');
+const path = require('path');
 const { EMAIL_RE, getSupabase, esc, siteUrl } = require('../lib/shared');
 
 const BATCH_SIZE = 50; // recipients per email (hidden with BCC)
@@ -107,6 +109,7 @@ module.exports = async (req, res) => {
 
     const pageUrl = `${siteUrl(req)}/memo/${memo.id}`;
     const fileLink = userDb.storage.from('memorandums').getPublicUrl(memo.file_path).data.publicUrl;
+    const logo = fs.readFileSync(path.join(process.cwd(), 'public', 'logo.png'));
 
     const subject = `${memo.memo_no} — ${memo.title}`;
     const preheader = `${memo.memo_no}: ${memo.title}. Open the school memorandum and download the file.`;
@@ -119,8 +122,17 @@ module.exports = async (req, res) => {
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background-color:#ffffff;border:1px solid #e4e9e5;border-radius:12px;overflow:hidden;">
             <tr>
               <td style="background-color:#214d3b;padding:24px 32px;">
-                <p style="margin:0;color:#dce9df;font-size:11px;line-height:16px;letter-spacing:1.5px;text-transform:uppercase;">Luis Y. Ferrer Jr. Senior High School</p>
-                <p style="margin:5px 0 0;color:#ffffff;font-family:Georgia,'Times New Roman',serif;font-size:21px;line-height:28px;">School Memorandum</p>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding-right:16px;vertical-align:middle;">
+                      <img src="cid:school-logo" width="64" alt="School logo" style="display:block;width:64px;height:auto;border:0;">
+                    </td>
+                    <td style="vertical-align:middle;">
+                      <p style="margin:0;color:#dce9df;font-size:11px;line-height:16px;letter-spacing:1.5px;text-transform:uppercase;">Luis Y. Ferrer Jr. Senior High School</p>
+                      <p style="margin:5px 0 0;color:#ffffff;font-family:Georgia,'Times New Roman',serif;font-size:21px;line-height:28px;">School Memorandum</p>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
             <tr>
@@ -186,6 +198,13 @@ module.exports = async (req, res) => {
           subject,
           html,
           text,
+          attachments: [{
+            filename: 'logo.png',
+            content: logo,
+            contentType: 'image/png',
+            cid: 'school-logo',
+            contentDisposition: 'inline',
+          }],
         });
         sent += emailed.length;
         await userDb.from('share_logs').insert(
