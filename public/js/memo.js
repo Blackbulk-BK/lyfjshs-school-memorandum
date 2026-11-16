@@ -149,6 +149,20 @@
       sendBtn.textContent = 'Sending…';
       msg.textContent = '';
 
+      // Collect all recipients: checked saved recipients + manually typed email
+      const allRecipients = Array.from(selected);
+      const manualEmail = document.getElementById('new-email').value.trim().toLowerCase();
+      if (manualEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(manualEmail) && !selected.has(manualEmail)) {
+        allRecipients.push(manualEmail);
+      }
+
+      if (allRecipients.length === 0) {
+        msg.textContent = 'Select at least one recipient or enter an email address.';
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send email';
+        return;
+      }
+
       const { data: { session } } = await sb.auth.getSession();
       const res = await fetch('/api/send-email', {
         method: 'POST',
@@ -156,13 +170,20 @@
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + (session ? session.access_token : ''),
         },
-        body: JSON.stringify({ memoId, recipients: Array.from(selected) }),
+        body: JSON.stringify({ memoId, recipients: allRecipients }),
       });
       const json = await res.json().catch(() => ({}));
 
       sendBtn.disabled = false;
       sendBtn.textContent = 'Send email';
-      msg.textContent = res.ok ? `Sent to ${json.sent} email(s).` : json.error || 'Failed to send.';
+      if (res.ok) {
+        const parts = [];
+        if (json.sent) parts.push(`Sent to ${json.sent} email(s)`);
+        if (json.failed) parts.push(`${json.failed} failed`);
+        msg.textContent = parts.join(', ') + '.';
+      } else {
+        msg.textContent = json.error || 'Failed to send.';
+      }
     });
 
     loadRecipients();
