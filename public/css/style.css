@@ -649,11 +649,11 @@ th.date .sort-menu {
 }
 
 /* ==========================================================================
-   INSTITUTIONAL SITE FOOTER
+   INSTITUTIONAL SITE FOOTER (COMPACT)
    ========================================================================== */
 
 .site-footer {
-  margin-top: 54px;
+  margin-top: 36px;
 }
 
 .footer-container {
@@ -663,12 +663,12 @@ th.date .sort-menu {
 .footer-card {
   background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 34px 38px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgb(34 49 39 / 4%);
+  padding: 16px 24px 12px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 10px;
   position: relative;
   overflow: hidden;
 }
@@ -679,39 +679,37 @@ th.date .sort-menu {
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 3px;
   background: linear-gradient(90deg, var(--forest) 0%, #2f6a52 45%, #b76a4d 100%);
 }
 
 .footer-content {
   display: grid;
-  grid-template-columns: 1.15fr auto 1.35fr;
+  grid-template-columns: auto 1px 1fr;
   align-items: center;
-  gap: 36px;
+  gap: 22px;
 }
 
 .footer-logos-col {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  gap: 14px;
 }
 
 .footer-logos {
   display: flex;
   align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .footer-logo-wrap {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 10px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(230, 232, 223, 0.8);
-  box-shadow: 0 2px 6px rgb(34 49 39 / 4%);
 }
 
 .footer-logo {
@@ -720,51 +718,54 @@ th.date .sort-menu {
 }
 
 .footer-logo.logo-deped {
-  height: 46px;
+  height: 32px;
   width: auto;
-  max-width: 120px;
+  max-width: 85px;
 }
 
 .footer-logo.logo-bp {
-  height: 46px;
+  height: 32px;
   width: auto;
-  max-width: 58px;
+  max-width: 42px;
 }
 
 .footer-logo.logo-school {
-  height: 46px;
+  height: 32px;
   width: auto;
-  max-width: 48px;
+  max-width: 36px;
 }
 
 .footer-school-identity {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 1px;
 }
 
 .footer-dept-line {
   margin: 0;
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.05em;
   color: var(--muted);
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .footer-school-heading {
   margin: 0;
   font-family: "Playfair Display", Georgia, serif;
-  font-size: 1.12rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.25;
   color: var(--forest-dark);
+  white-space: nowrap;
 }
 
 .footer-division-line {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--muted);
+  white-space: nowrap;
 }
 
 .footer-divider {
@@ -776,62 +777,55 @@ th.date .sort-menu {
 .footer-info-col {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.footer-info-eyebrow {
-  margin: 0;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--forest);
-  text-transform: uppercase;
 }
 
 .footer-meta-list {
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 20px;
+  row-gap: 5px;
 }
 
 .footer-meta-item {
-  display: grid;
-  grid-template-columns: 130px 1fr;
+  display: flex;
   align-items: baseline;
-  gap: 12px;
-  font-size: 0.84rem;
-  line-height: 1.45;
+  gap: 6px;
+  font-size: 0.77rem;
+  line-height: 1.35;
 }
 
 .footer-meta-item dt {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 4px;
   font-weight: 600;
   color: var(--forest-dark);
+  white-space: nowrap;
   margin: 0;
+  font-size: 0.74rem;
 }
 
 .footer-meta-item dt svg,
 .footer-meta-item dt i {
   color: var(--forest);
-  width: 15px;
-  height: 15px;
+  width: 13px;
+  height: 13px;
   flex-shrink: 0;
 }
 
 .footer-meta-item dd {
   margin: 0;
   color: var(--ink);
+  font-size: 0.77rem;
   word-break: break-word;
 }
 
 .footer-link {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   color: var(--forest);
   font-weight: 500;
   text-decoration: none;
@@ -844,18 +838,18 @@ th.date .sort-menu {
 }
 
 .footer-link svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 .footer-bottom {
-  border-top: 1px solid var(--line);
-  padding-top: 18px;
+  border-top: 1px solid rgba(230, 232, 223, 0.7);
+  padding-top: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  font-size: 0.74rem;
+  gap: 12px;
+  font-size: 0.69rem;
   color: var(--muted);
 }
 
@@ -869,45 +863,41 @@ th.date .sort-menu {
   margin: 0;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1040px) {
   .footer-content {
     grid-template-columns: 1fr;
-    gap: 26px;
+    gap: 14px;
   }
 
   .footer-divider {
     display: none;
   }
+
+  .footer-logos-col {
+    flex-wrap: wrap;
+  }
 }
 
-@media (max-width: 640px) {
-  .footer-card {
-    padding: 24px 20px 18px;
-    border-radius: 14px;
+@media (max-width: 720px) {
+  .footer-meta-list {
+    grid-template-columns: 1fr;
+    row-gap: 5px;
   }
 
-  .footer-meta-item {
-    grid-template-columns: 1fr;
-    gap: 2px;
+  .footer-dept-line,
+  .footer-school-heading,
+  .footer-division-line {
+    white-space: normal;
+  }
+
+  .footer-card {
+    padding: 14px 16px 10px;
   }
 
   .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
-  }
-
-  .footer-logos {
-    gap: 10px;
-  }
-
-  .footer-logo.logo-deped {
-    height: 38px;
-  }
-
-  .footer-logo.logo-bp,
-  .footer-logo.logo-school {
-    height: 38px;
+    gap: 3px;
   }
 }
 
