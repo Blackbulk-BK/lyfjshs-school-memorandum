@@ -653,7 +653,7 @@ th.date .sort-menu {
    ========================================================================== */
 
 .site-footer {
-  margin-top: 36px;
+  margin-top: 24px;
 }
 
 .footer-container {
@@ -663,12 +663,12 @@ th.date .sort-menu {
 .footer-card {
   background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 4px 16px rgb(34 49 39 / 4%);
-  padding: 16px 24px 12px;
+  padding: 10px 18px 8px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   position: relative;
   overflow: hidden;
 }
@@ -687,27 +687,27 @@ th.date .sort-menu {
   display: grid;
   grid-template-columns: auto 1px 1fr;
   align-items: center;
-  gap: 22px;
+  gap: 16px;
 }
 
 .footer-logos-col {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .footer-logos {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .footer-logo-wrap {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 6px;
-  border-radius: 6px;
+  padding: 2px 4px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(230, 232, 223, 0.8);
 }
@@ -718,21 +718,21 @@ th.date .sort-menu {
 }
 
 .footer-logo.logo-deped {
-  height: 32px;
+  height: 24px;
   width: auto;
-  max-width: 85px;
+  max-width: 65px;
 }
 
 .footer-logo.logo-bp {
-  height: 32px;
+  height: 24px;
   width: auto;
-  max-width: 42px;
+  max-width: 32px;
 }
 
 .footer-logo.logo-school {
-  height: 32px;
+  height: 24px;
   width: auto;
-  max-width: 36px;
+  max-width: 28px;
 }
 
 .footer-school-identity {
@@ -743,7 +743,7 @@ th.date .sort-menu {
 
 .footer-dept-line {
   margin: 0;
-  font-size: 0.65rem;
+  font-size: 0.58rem;
   font-weight: 600;
   letter-spacing: 0.05em;
   color: var(--muted);
@@ -754,16 +754,16 @@ th.date .sort-menu {
 .footer-school-heading {
   margin: 0;
   font-family: "Playfair Display", Georgia, serif;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.2;
   color: var(--forest-dark);
   white-space: nowrap;
 }
 
 .footer-division-line {
   margin: 0;
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -784,41 +784,41 @@ th.date .sort-menu {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  column-gap: 20px;
-  row-gap: 5px;
+  column-gap: 14px;
+  row-gap: 3px;
 }
 
 .footer-meta-item {
   display: flex;
   align-items: baseline;
-  gap: 6px;
-  font-size: 0.77rem;
-  line-height: 1.35;
+  gap: 4px;
+  font-size: 0.72rem;
+  line-height: 1.25;
 }
 
 .footer-meta-item dt {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   font-weight: 600;
   color: var(--forest-dark);
   white-space: nowrap;
   margin: 0;
-  font-size: 0.74rem;
+  font-size: 0.68rem;
 }
 
 .footer-meta-item dt svg,
 .footer-meta-item dt i {
   color: var(--forest);
-  width: 13px;
-  height: 13px;
+  width: 11px;
+  height: 11px;
   flex-shrink: 0;
 }
 
 .footer-meta-item dd {
   margin: 0;
   color: var(--ink);
-  font-size: 0.77rem;
+  font-size: 0.72rem;
   word-break: break-word;
 }
 
@@ -838,18 +838,18 @@ th.date .sort-menu {
 }
 
 .footer-link svg {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
 }
 
 .footer-bottom {
   border-top: 1px solid rgba(230, 232, 223, 0.7);
-  padding-top: 8px;
+  padding-top: 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  font-size: 0.69rem;
+  gap: 10px;
+  font-size: 0.65rem;
   color: var(--muted);
 }
 
@@ -866,7 +866,7 @@ th.date .sort-menu {
 @media (max-width: 1040px) {
   .footer-content {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 10px;
   }
 
   .footer-divider {
@@ -881,7 +881,7 @@ th.date .sort-menu {
 @media (max-width: 720px) {
   .footer-meta-list {
     grid-template-columns: 1fr;
-    row-gap: 5px;
+    row-gap: 3px;
   }
 
   .footer-dept-line,
@@ -891,13 +891,13 @@ th.date .sort-menu {
   }
 
   .footer-card {
-    padding: 14px 16px 10px;
+    padding: 10px 14px 8px;
   }
 
   .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
-    gap: 3px;
+    gap: 2px;
   }
 }
 
