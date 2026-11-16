@@ -648,6 +648,269 @@ th.date .sort-menu {
   letter-spacing: 0.12em;
 }
 
+/* ==========================================================================
+   INSTITUTIONAL SITE FOOTER
+   ========================================================================== */
+
+.site-footer {
+  margin-top: 54px;
+}
+
+.footer-container {
+  padding-top: 0;
+}
+
+.footer-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 34px 38px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--forest) 0%, #2f6a52 45%, #b76a4d 100%);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1.15fr auto 1.35fr;
+  align-items: center;
+  gap: 36px;
+}
+
+.footer-logos-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer-logos {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.footer-logo-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(230, 232, 223, 0.8);
+  box-shadow: 0 2px 6px rgb(34 49 39 / 4%);
+}
+
+.footer-logo {
+  display: block;
+  object-fit: contain;
+}
+
+.footer-logo.logo-deped {
+  height: 46px;
+  width: auto;
+  max-width: 120px;
+}
+
+.footer-logo.logo-bp {
+  height: 46px;
+  width: auto;
+  max-width: 58px;
+}
+
+.footer-logo.logo-school {
+  height: 46px;
+  width: auto;
+  max-width: 48px;
+}
+
+.footer-school-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.footer-dept-line {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.footer-school-heading {
+  margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.12rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--forest-dark);
+}
+
+.footer-division-line {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.footer-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--line);
+}
+
+.footer-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-info-eyebrow {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--forest);
+  text-transform: uppercase;
+}
+
+.footer-meta-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-meta-item {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.footer-meta-item dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  color: var(--forest-dark);
+  margin: 0;
+}
+
+.footer-meta-item dt svg,
+.footer-meta-item dt i {
+  color: var(--forest);
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.footer-meta-item dd {
+  margin: 0;
+  color: var(--ink);
+  word-break: break-word;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--forest);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.footer-link:hover {
+  color: var(--clay);
+  text-decoration: underline;
+}
+
+.footer-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.footer-archive-label span {
+  color: var(--forest);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.footer-copyright {
+  margin: 0;
+}
+
+@media (max-width: 980px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .footer-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-card {
+    padding: 24px 20px 18px;
+    border-radius: 14px;
+  }
+
+  .footer-meta-item {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .footer-logos {
+    gap: 10px;
+  }
+
+  .footer-logo.logo-deped {
+    height: 38px;
+  }
+
+  .footer-logo.logo-bp,
+  .footer-logo.logo-school {
+    height: 38px;
+  }
+}
+
 .btn {
   display: inline-flex;
   min-height: 42px;

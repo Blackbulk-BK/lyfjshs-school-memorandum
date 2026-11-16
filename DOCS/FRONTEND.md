@@ -159,4 +159,5 @@ The application implements a tailored design system reflecting academic elegance
 - **Buttons (`.btn`, `.btn.primary`, `.btn.danger`, `.btn.ghost`)**: Standardized touch targets (minimum 44px), smooth transition transforms, active states, and focus-visible outlines.
 - **Data Tables (`.memo-table`)**: Zebra-striped rows on hover, fixed header alignment, responsive horizontal scroll wrapping on mobile screens.
 - **Modals & Dialogs (`dialog`)**: Native modal styling with semi-transparent tinted backdrop (`::backdrop { background: rgb(25 61 46 / 45%); backdrop-filter: blur(4px); }`).
+- **Institutional Footer (`.site-footer`, `.footer-card`)**: Responsive multi-column card footer containing official DepEd and Bagong Pilipinas seals alongside the school emblem (`logo.png`), paired with school location, Facebook page, contact number, and official DepEd email address.
 - **Responsive Layout**: Fluid breakpoints catering to desktop, tablets, and small mobile displays down to 320px width.
