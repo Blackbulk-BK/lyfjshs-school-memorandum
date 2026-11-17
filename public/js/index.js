@@ -3,19 +3,18 @@
   const params = new URLSearchParams(location.search);
   // remove characters that would break the filter
   const searchInput = document.getElementById('search-input');
-  const dateInput = document.getElementById('date-filter-input');
-  const clearDateButton = document.getElementById('clear-date-filter');
+  const yearSelect = document.getElementById('year-filter-select');
+  const yearBadge = document.getElementById('year-badge');
   const form = searchInput.form;
   const sortTriggers = Array.from(document.querySelectorAll('.sort-trigger'));
   const sortOptions = Array.from(document.querySelectorAll('[data-sort-option]'));
+  const dateTrigger = document.querySelector('th.date .sort-trigger');
   const initialQuery = (params.get('q') || '').replace(/[%,()*\\]/g, ' ').trim();
-  const requestedDate = params.get('date') || '';
-  const parsedDate = new Date(`${requestedDate}T00:00:00Z`);
-  const initialDate = /^\d{4}-\d{2}-\d{2}$/.test(requestedDate)
-    && !Number.isNaN(parsedDate.getTime())
-    && parsedDate.toISOString().slice(0, 10) === requestedDate
-    ? requestedDate
-    : '';
+  const requestedYear = (params.get('year') || '').trim();
+  const legacyDate = (params.get('date') || '').trim();
+  const initialYear = /^\d{4}$/.test(requestedYear)
+    ? requestedYear
+    : (/^\d{4}/.test(legacyDate) ? legacyDate.slice(0, 4) : '');
   const validFields = ['date', 'number', 'title'];
   const [initialField, initialDirection] = (params.get('sort') || 'date-desc').split('-');
   const sort = {
@@ -23,8 +22,6 @@
     direction: initialDirection === 'asc' ? 'asc' : 'desc',
   };
   searchInput.value = initialQuery;
-  dateInput.value = initialDate;
-  clearDateButton.hidden = !initialDate;
 
   const tbody = document.getElementById('memo-rows');
   const headers = Array.from(document.querySelectorAll('thead th'));
@@ -39,6 +36,51 @@
       trigger.setAttribute('aria-expanded', 'false');
       if (returnFocus) trigger.focus();
     });
+  }
+
+  function updateYearBadge(year) {
+    if (yearBadge) {
+      if (year) {
+        yearBadge.hidden = false;
+        yearBadge.textContent = year;
+      } else {
+        yearBadge.hidden = true;
+        yearBadge.textContent = '';
+      }
+    }
+    if (dateTrigger) {
+      dateTrigger.classList.toggle('is-filtered', Boolean(year));
+    }
+  }
+
+  async function populateYearFilter(selectedYear) {
+    const years = new Set();
+    const currentYear = new Date().getFullYear();
+    years.add(String(currentYear));
+
+    try {
+      const { data } = await sb.from('memorandums').select('memo_date');
+      if (data && data.length) {
+        data.forEach((m) => {
+          if (m.memo_date) {
+            const y = String(m.memo_date).slice(0, 4);
+            if (/^\d{4}$/.test(y)) years.add(y);
+          }
+        });
+      }
+    } catch (e) {
+      console.error('Could not load memorandum years:', e);
+    }
+
+    const sortedYears = Array.from(years).sort((a, b) => Number(b) - Number(a));
+    if (yearSelect) {
+      yearSelect.innerHTML = '<option value="">All years</option>' +
+        sortedYears.map((y) => `<option value="${y}">${y}</option>`).join('');
+      if (selectedYear && sortedYears.includes(selectedYear)) {
+        yearSelect.value = selectedYear;
+      }
+    }
+    updateYearBadge(selectedYear);
   }
 
   function updateSortButtons() {
@@ -72,23 +114,28 @@
     });
   }
 
-  async function loadMemorandums(rawQuery, selectedDate = dateInput.value) {
+  async function loadMemorandums(rawQuery, selectedYear = (yearSelect ? yearSelect.value : '')) {
     const requestId = ++latestRequest;
     const q = rawQuery.replace(/[%,()*\\]/g, ' ').trim();
     const url = new URL(location.href);
     if (q) url.searchParams.set('q', q);
     else url.searchParams.delete('q');
-    if (selectedDate) url.searchParams.set('date', selectedDate);
-    else url.searchParams.delete('date');
+    url.searchParams.delete('date');
+    if (selectedYear) url.searchParams.set('year', selectedYear);
+    else url.searchParams.delete('year');
     url.searchParams.set('sort', `${sort.field}-${sort.direction}`);
     history.replaceState(null, '', url);
-    clearDateButton.hidden = !selectedDate;
+    updateYearBadge(selectedYear);
 
     tbody.innerHTML = '<tr><td colspan="3" class="empty"><span class="loading-mark"></span>Loading memorandums</td></tr>';
 
     let query = sb.from('memorandums').select('*');
     if (q) query = query.or(`title.ilike.%${q}%,memo_no.ilike.%${q}%`);
-    if (selectedDate) query = query.eq('memo_date', selectedDate);
+    if (selectedYear) {
+      query = query
+        .gte('memo_date', `${selectedYear}-01-01`)
+        .lte('memo_date', `${selectedYear}-12-31`);
+    }
     const { data, error } = await query;
 
     if (requestId !== latestRequest) return;
@@ -97,7 +144,7 @@
       return;
     }
     if (!data.length) {
-      tbody.innerHTML = `<tr><td colspan="3" class="empty">${selectedDate ? 'No memorandums found for this date.' : 'No memorandum found.'}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="3" class="empty">${selectedYear ? `No memorandums found for ${esc(selectedYear)}.` : 'No memorandum found.'}</td></tr>`;
       return;
     }
 
@@ -134,15 +181,11 @@
     loadMemorandums(searchInput.value);
   });
 
-  dateInput.addEventListener('change', () => {
-    loadMemorandums(searchInput.value, dateInput.value);
-  });
-
-  clearDateButton.addEventListener('click', () => {
-    dateInput.value = '';
-    loadMemorandums(searchInput.value, '');
-    dateInput.focus();
-  });
+  if (yearSelect) {
+    yearSelect.addEventListener('change', () => {
+      loadMemorandums(searchInput.value, yearSelect.value);
+    });
+  }
 
   sortTriggers.forEach((trigger) => {
     trigger.addEventListener('click', (event) => {
@@ -174,6 +217,8 @@
     if (event.key === 'Escape') closeSortMenus(true);
   });
 
+  SchoolIcons.render(document);
   updateSortButtons();
-  await loadMemorandums(initialQuery);
+  await populateYearFilter(initialYear);
+  await loadMemorandums(initialQuery, initialYear);
 })();

@@ -15,24 +15,24 @@ Provides the public search directory where any visitor can search, filter, sort,
 
 #### Features & User Experience
 - **Search Bar**: Real-time debounce search supporting partial and full matches across memorandum title and memorandum number. Special regex characters (`%`, `,`, `(`, `)`, `*`, `\`) are stripped automatically to prevent SQL injection or search syntax errors.
-- **Date Filter**: HTML5 date picker allowing visitors to filter memorandums issued on a specific calendar day. An interactive "Clear" button (`#clear-date-filter`) appears whenever a date is active.
+- **Year Filter ("Choose Year")**: Integrated into the **Date issued** column menu, allowing visitors to choose a specific year to filter by (dynamically populated from published memorandums) or view "All years". An active year badge and filtered state indicator appear on the column header when a filter is applied.
 - **Multi-Column Sorting**:
-  - Sort by **Date Issued** (Newest first / Oldest first).
+  - Sort by **Date Issued** (Newest first / Oldest first), alongside the **Choose Year** filter in the same menu.
   - Sort by **Memorandum Number** (Ascending / Descending numerical order).
   - Sort by **Title** (Alphabetical A–Z / Z–A).
 - **Accessibility & ARIA**:
   - The sort headers include `aria-sort="ascending|descending|none"`.
   - Dropdown sort options update `aria-pressed="true|false"`.
   - Dropdown trigger buttons toggle `aria-expanded="true|false"`.
-- **URL Synchronization**: Any filter, search query, or sort order is continuously synchronized to browser query parameters (`?q=...&date=...&sort=...`) using `history.replaceState()`. Visitors can bookmark or share direct search links.
+- **URL Synchronization**: Any filter, search query, or sort order is continuously synchronized to browser query parameters (`?q=...&year=...&sort=...`) using `history.replaceState()`. Visitors can bookmark or share direct search links.
 
 #### Lifecycle & Execution Flow
 1. Parses URL query string on DOM load.
-2. Initializes search input, date input, and sort toggles to match URL state.
+2. Initializes search input, year selector, and sort toggles to match URL state.
 3. Renders a loading state indicator (`<span class="loading-mark"></span> Loading memorandums`).
 4. Executes query using `sb.from('memorandums').select('*')`.
    - If a query exists: adds `.or('title.ilike.%q%,memo_no.ilike.%q%')`.
-   - If a date exists: adds `.eq('memo_date', date)`.
+   - If a year exists: adds `.gte('memo_date', '${year}-01-01').lte('memo_date', '${year}-12-31')`.
 5. Sorts the resulting records in memory or by query order:
    - Numerical sort parses the numeric portion from memo number patterns (e.g. `SM NO. 123 s. 2026` -> `123`).
 6. Injects rendered `<tr>` rows into the table body (`#memo-rows`). Displays clear empty states if no matching records exist.
