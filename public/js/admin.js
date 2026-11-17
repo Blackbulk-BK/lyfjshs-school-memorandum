@@ -86,8 +86,22 @@
 
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
     const path = `${Date.now()}-${safeName}`;
+    const memoNo = formatMemoNumber(document.getElementById('memo-no').value);
+    const title = document.getElementById('title').value.trim();
+    const memoDate = document.getElementById('date').value;
 
     try {
+      const { data: existing } = await sb
+        .from('memorandums')
+        .select('id')
+        .ilike('memo_no', memoNo)
+        .maybeSingle();
+
+      if (existing) {
+        msg.textContent = "There's already a memorandum number for that.";
+        return;
+      }
+
       const up = await sb.storage.from(BUCKET).upload(path, file);
       if (up.error) {
         msg.textContent = `Upload failed: ${up.error.message}`;
@@ -95,9 +109,9 @@
       }
 
       const ins = await sb.from('memorandums').insert({
-        memo_no: formatMemoNumber(document.getElementById('memo-no').value),
-        title: document.getElementById('title').value.trim(),
-        memo_date: document.getElementById('date').value,
+        memo_no: memoNo,
+        title,
+        memo_date: memoDate,
         file_path: path,
         file_name: file.name,
         file_type: file.type || null,
@@ -107,7 +121,11 @@
       if (ins.error) {
         const cleanup = await sb.storage.from(BUCKET).remove([path]);
         if (cleanup.error) console.error('Could not remove file after memo insert failed:', cleanup.error);
-        msg.textContent = `Memorandum could not be saved: ${ins.error.message}`;
+        if (ins.error.code === '23505' || String(ins.error.message).includes('memorandums_memo_no_key')) {
+          msg.textContent = "There's already a memorandum number for that.";
+        } else {
+          msg.textContent = `Memorandum could not be saved: ${ins.error.message}`;
+        }
         return;
       }
 
